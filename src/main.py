@@ -17,5 +17,3 @@ organisations = [
     EXAM_BOARD,
 ]
 FILENAME = f"a2c.{str(CENTRE_NUMBER)}.{EXAM_BOARD}.EDIResults.{MESSAGE_ID}.xml"
-
-

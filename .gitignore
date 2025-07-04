@@ -3,3 +3,5 @@ data/*
 .env
 test.txt
 .env.testing
+.pytest_cache
+**/__pycache__
