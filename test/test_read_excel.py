@@ -1,7 +1,14 @@
 import pytest
 from openpyxl.worksheet.worksheet import Worksheet
-from src.read_excel import get_worksheets, get_date
-
+from openpyxl.cell.cell import Cell
+from src.read_excel import (
+    get_worksheets, 
+    get_date, 
+    get_titles,
+    get_sheet_results,
+    get_results
+)
+from datetime import datetime
 
 @pytest.mark.it('get_worksheets function tests')
 class TestGetWorksheets:
@@ -36,7 +43,70 @@ class TestGetDate:
         sheets = get_worksheets(test_file)
         assert get_date(sheets) == "2024-08-13"
 
-    @pytest.mark.skip
+    @pytest.mark.it("Returns date if no date found")
+    def test_get_date_returns_date_format(self):
+        date = get_date([])
+        for digit in date[0:4] + date[5:7] + date[8:]:
+            assert digit.isdigit()
+        assert date[4] == "-"
+        assert date[7] == "-"
+    
     @pytest.mark.it("Returns today's date if no date found")
     def test_get_date_returns_todays_date(self):
-        assert get_date([]) == ""
+        date = get_date([])
+        assert datetime.strptime(date, r"%Y-%m-%d").date() == datetime.now().date()
+
+@pytest.mark.it("get_titles function tests")
+class TestGetTitles:
+    @pytest.fixture
+    def test_row(self):
+        syllabus = Cell(worksheet=None, row=1, column=1, value="Syllabus")
+        candidate = Cell(worksheet=None, row=1, column=3, value="Candidate number")
+        comp_01 = Cell(worksheet=None, row=1, column=3, value="Component 01")
+        comp_20 = Cell(worksheet=None, row=1, column=5, value="Component 20")
+        return (syllabus, candidate, comp_01, comp_20)
+    
+    @pytest.mark.it("Returns dictionary")
+    def test_get_titles_returns_dict(self, test_row):
+        titles = get_titles("0000", test_row)
+        assert isinstance(titles, dict)
+    
+    @pytest.mark.it("Returns dictionary with expected keys")
+    def test_get_titles_returns_expected_keys(self, test_row):
+        titles = get_titles("0000", test_row)
+        assert "CandidateNumber" in titles
+        assert "Components" in titles
+
+    @pytest.mark.it("Returns expected component values")
+    def test_get_titles_returns_components(self, test_row):
+        titles = get_titles("0000", test_row)
+        expected = [(3, "0000/01"), (5, "0000/20")]
+        assert titles["Components"] == expected
+
+class TestGetSheetResults:
+    pass
+
+@pytest.mark.skip
+@pytest.mark.it('get_candidates function tests')
+class TestGetResults:
+    @pytest.mark.it("Returns list")
+    def test_get_results_returns_list(self):
+        candidates = get_results([])
+        assert isinstance(candidates, list)
+
+    @pytest.mark.it("Returns list of dictionaries")
+    def test_get_results_returns_list_of_dicts(self):
+        test_file = "data/Testing.xlsx"
+        sheets = get_worksheets(test_file)
+        candidates = get_results(sheets)
+        assert isinstance(candidates[0], dict)
+        for candidate in candidates:
+            assert isinstance(candidate, dict)
+
+    @pytest.mark.it("Dictionaries contain expected keys")
+    def test_get_results_dict_keys(self):
+        candidates = get_results([])
+        for candidate in candidates:
+            assert "CandidateNumber" in candidate
+            assert "Mark" in candidate
+            assert "ComponentCode" in candidate
