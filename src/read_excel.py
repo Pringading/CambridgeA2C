@@ -35,9 +35,8 @@ def get_date(sheets: list) -> str:
     If date not found returns today's date.
     """
 
-    if not sheets:
-        parsed_date = datetime.now()
-    else:
+    parsed_date = datetime.now()
+    if sheets:
         sheet = sheets[0]
         for cell in sheet['A']:
             if isinstance(cell.value, str) and "Report generated" in cell.value:
@@ -49,6 +48,7 @@ def get_date(sheets: list) -> str:
 
 
 def get_titles(option: str, row: tuple) -> dict:
+    """Find column numbers for data."""
     titles = {
         "Components": []
     }
@@ -63,25 +63,37 @@ def get_titles(option: str, row: tuple) -> dict:
 
 
 def get_sheet_results(sheet: Worksheet) -> list:
-    """Get title locations from specified row."""
+    """Get results data for one sheet."""
+    results = []
     option = sheet.title
-    mark_rows = []
-    #     if row[0] == "Syllabus":
-    #         start = cell.row
-    #         break
-    # for cell in sheet[start]:
-    #     if cell.value.lower() == "candidate number":
-    #         candidate_col = cell.col
 
-    #     if isinstance(cell.value, str) and "Component" in cell.value:
-    #         component = cell.value[-2:]
-    #         mark_rows.append((cell.col, component))
-    
-    # start += 1
-    # for row in sheet[start]:
-    #     if row[0] == None:
-    #         break
-    #     candidate = row[candidate_col]
+    # get titles
+    start = None
+    for row in sheet:
+        if row[0].value == "Syllabus":
+            start = row[0].row
+            break
+    if not start:
+        return results
+    titles = get_titles(option, sheet[start])
+
+    # get results
+    candidate_col = titles["CandidateNumber"]
+    result_cols = titles["Components"]
+    start += 1
+    for row in range(start, 2000):
+        if sheet.cell(row,1).value == None:
+            break
+        candidate = {}
+        candidate["CandidateNumber"] = sheet.cell(row, candidate_col).value
+        candidate["Results"] = []
+        for col, component in result_cols:
+            mark = sheet.cell(row, col).value
+            candidate["Results"].append((component, mark))
+
+        results.append(candidate)
+
+    return results
 
 
 def get_results(sheets: list) -> list:

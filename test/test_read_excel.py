@@ -83,8 +83,41 @@ class TestGetTitles:
         expected = [(3, "0000/01"), (5, "0000/20")]
         assert titles["Components"] == expected
 
+@pytest.mark.it('get_sheet_results funciton tests')
 class TestGetSheetResults:
-    pass
+    @pytest.mark.it("Returns list")
+    def test_get_results_returns_list(self):
+        test_worksheet = Worksheet(parent=None, title="test")
+        candidates = get_sheet_results(test_worksheet)
+        assert isinstance(candidates, list)
+
+    @pytest.mark.it("Returns list of dictionaries")
+    def test_get_results_returns_list_of_dicts(self):
+        test_file = "data/Testing.xlsx"
+        sheets = get_worksheets(test_file)
+        results = get_sheet_results(sheets[0])
+        assert isinstance(results[0], dict)
+        for result in results:
+            assert isinstance(result, dict)
+
+    @pytest.mark.it("Dictionaries contain candidate number")
+    def test_get_results_has_candidate_no(self):
+        test_file = "data/Testing.xlsx"
+        sheets = get_worksheets(test_file)
+        results = get_sheet_results(sheets[0])
+        for result in results:
+            assert isinstance(result["CandidateNumber"], int)
+
+    @pytest.mark.it("Dictionaries contain expected keys")
+    def test_get_results_dict_keys(self):
+        test_file = "data/Testing.xlsx"
+        sheets = get_worksheets(test_file)
+        results = get_sheet_results(sheets[0])
+        for result in results:
+            assert "Results" in result
+            for mark in result["Results"]:
+                assert mark[0] in ("0100/01",  "0100/02", "0100/03")
+                assert isinstance(mark[1], int)
 
 @pytest.mark.skip
 @pytest.mark.it('get_candidates function tests')
@@ -98,10 +131,10 @@ class TestGetResults:
     def test_get_results_returns_list_of_dicts(self):
         test_file = "data/Testing.xlsx"
         sheets = get_worksheets(test_file)
-        candidates = get_results(sheets)
-        assert isinstance(candidates[0], dict)
-        for candidate in candidates:
-            assert isinstance(candidate, dict)
+        results = get_sheet_results(sheets[0])
+        assert isinstance(results[0], dict)
+        for result in results:
+            assert isinstance(result, dict)
 
     @pytest.mark.it("Dictionaries contain expected keys")
     def test_get_results_dict_keys(self):
