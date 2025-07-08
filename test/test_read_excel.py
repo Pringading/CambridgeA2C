@@ -2,14 +2,15 @@ import pytest
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
 from src.read_excel import (
-    get_worksheets, 
-    get_date, 
+    get_worksheets,
+    get_date,
     get_titles,
     get_sheet_results,
     get_results,
     get_centre_number
 )
 from datetime import datetime
+
 
 @pytest.mark.it('get_worksheets function tests')
 class TestGetWorksheets:
@@ -37,7 +38,7 @@ class TestGetDate:
     @pytest.mark.it('Returns string')
     def test_get_date_returns_string(self):
         assert isinstance(get_date([]), str)
-    
+
     @pytest.mark.it('Returns date value')
     def test_get_date_returns_date(self):
         test_file = "data/Testing.xlsx"
@@ -51,27 +52,29 @@ class TestGetDate:
             assert digit.isdigit()
         assert date[4] == "-"
         assert date[7] == "-"
-    
+
     @pytest.mark.it("Returns today's date if no date found")
     def test_get_date_returns_todays_date(self):
         date = get_date([])
-        assert datetime.strptime(date, r"%Y-%m-%d").date() == datetime.now().date()
+        parsed_date = datetime.strptime(date, r"%Y-%m-%d").date()
+        assert parsed_date == datetime.now().date()
+
 
 @pytest.mark.it("get_titles function tests")
 class TestGetTitles:
     @pytest.fixture
     def test_row(self):
         syllabus = Cell(worksheet=None, row=1, column=1, value="Syllabus")
-        candidate = Cell(worksheet=None, row=1, column=3, value="Candidate number")
+        cand = Cell(worksheet=None, row=1, column=3, value="Candidate number")
         comp_01 = Cell(worksheet=None, row=1, column=3, value="Component 01")
         comp_20 = Cell(worksheet=None, row=1, column=5, value="Component 20")
-        return (syllabus, candidate, comp_01, comp_20)
-    
+        return (syllabus, cand, comp_01, comp_20)
+
     @pytest.mark.it("Returns dictionary")
     def test_get_titles_returns_dict(self, test_row):
         titles = get_titles("0000", test_row)
         assert isinstance(titles, dict)
-    
+
     @pytest.mark.it("Returns dictionary with expected keys")
     def test_get_titles_returns_expected_keys(self, test_row):
         titles = get_titles("0000", test_row)
@@ -83,6 +86,7 @@ class TestGetTitles:
         titles = get_titles("0000", test_row)
         expected = [(3, "0000/01"), (5, "0000/20")]
         assert titles["Components"] == expected
+
 
 @pytest.mark.it('get_sheet_results funciton tests')
 class TestGetSheetResults:
@@ -152,6 +156,7 @@ class TestGetResults:
         candidates = get_results(test_sheets)
         assert len(candidates) == 105
 
+
 @pytest.mark.it('Testing get_centre_number function')
 class TestGetCentreNumber:
     @pytest.fixture
@@ -163,7 +168,7 @@ class TestGetCentreNumber:
     def test_get_centre_number_returns_int(self, test_sheets):
         centre_number = get_centre_number(test_sheets)
         assert isinstance(centre_number, int)
-    
+
     @pytest.mark.it('returns expected number')
     def test_get_centre_number_returns_expected_cn(self, test_sheets):
         centre_number = get_centre_number(test_sheets)

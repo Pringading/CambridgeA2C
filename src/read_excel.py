@@ -3,12 +3,13 @@ from openpyxl.worksheet.worksheet import Worksheet
 from warnings import filterwarnings
 from datetime import datetime
 
-def get_worksheets(filename: str) -> list:
+
+def get_worksheets(filename: str) -> list[Worksheet]:
     """"Get list of worksheets objects from filename.
 
-    Args: filename
-    Returns list of worksheets
-    
+    Args: filename(str)
+    Returns: list of worksheets
+
     Will filter out worksheets that are not 4 characters starting with a
     digit. This means only worksheets with results data will be retained
     from Cambridge International component marks sheet.
@@ -39,7 +40,8 @@ def get_date(sheets: list) -> str:
     if sheets:
         sheet = sheets[0]
         for cell in sheet['A']:
-            if isinstance(cell.value, str) and "Report generated" in cell.value:
+            val = cell.value
+            if isinstance(val, str) and "Report generated" in val:
                 date = cell.value[20:]
                 break
         parsed_date = datetime.strptime(date, r"%d%b%Y")
@@ -48,7 +50,24 @@ def get_date(sheets: list) -> str:
 
 
 def get_titles(option: str, row: tuple) -> dict:
-    """Find column numbers for data."""
+    """Find column numbers for data.
+
+    Args:
+        option(str): the option code for the exam
+        row(tuple): a row of the worksheet as a tuple of Cell objects
+    Returns:
+        Dictionary with column number information:
+            Under the components key is a list of the column number
+            and the component code for the final marks for each component.
+        {
+            "CandidateNumber": <column number> (int)
+            "Components": [
+                (<column number>(int), "<option>/<component>"(str)),
+                (<column number>(int), "<option>/<component>"(str))
+                ...
+            ]
+        }
+    """
     titles = {
         "Components": []
     }
@@ -82,7 +101,7 @@ def get_sheet_results(sheet: Worksheet) -> list:
     result_cols = titles["Components"]
     start += 1
     for row in range(start, 2000):
-        if sheet.cell(row,1).value == None:
+        if not sheet.cell(row, 1).value:
             break
         candidate = {}
         candidate["CandidateNumber"] = sheet.cell(row, candidate_col).value
@@ -101,8 +120,9 @@ def get_results(sheets: list) -> list:
     results = []
     for sheet in sheets:
         results += get_sheet_results(sheet)
-        
+
     return results
+
 
 def get_centre_number(sheets: list) -> int:
     "Gets candidate number"
@@ -110,8 +130,8 @@ def get_centre_number(sheets: list) -> int:
     if sheets:
         sheet = sheets[0]
         for cell in sheet['C']:
-            if isinstance(cell.value, str) and cell.value.lower() == "centre number":
+            val = cell.value
+            if isinstance(val, str) and val.lower() == "centre number":
                 centre_number = sheet.cell(cell.row + 1, cell.column).value
                 break
     return centre_number
-
