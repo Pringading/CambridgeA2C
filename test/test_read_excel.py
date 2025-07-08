@@ -6,7 +6,8 @@ from src.read_excel import (
     get_date, 
     get_titles,
     get_sheet_results,
-    get_results
+    get_results,
+    get_centre_number
 )
 from datetime import datetime
 
@@ -119,27 +120,51 @@ class TestGetSheetResults:
                 assert mark[0] in ("0100/01",  "0100/02", "0100/03")
                 assert isinstance(mark[1], int)
 
-@pytest.mark.skip
-@pytest.mark.it('get_candidates function tests')
+
+@pytest.mark.it('get_results function tests')
 class TestGetResults:
+    @pytest.fixture
+    def test_sheets(self):
+        test_file = "data/Testing.xlsx"
+        return get_worksheets(test_file)
+
     @pytest.mark.it("Returns list")
-    def test_get_results_returns_list(self):
-        candidates = get_results([])
+    def test_get_results_returns_list(self, test_sheets):
+        candidates = get_results(test_sheets)
         assert isinstance(candidates, list)
 
     @pytest.mark.it("Returns list of dictionaries")
-    def test_get_results_returns_list_of_dicts(self):
-        test_file = "data/Testing.xlsx"
-        sheets = get_worksheets(test_file)
-        results = get_sheet_results(sheets[0])
+    def test_get_results_returns_list_of_dicts(self, test_sheets):
+        results = get_results(test_sheets)
         assert isinstance(results[0], dict)
         for result in results:
             assert isinstance(result, dict)
 
     @pytest.mark.it("Dictionaries contain expected keys")
-    def test_get_results_dict_keys(self):
-        candidates = get_results([])
+    def test_get_results_dict_keys(self, test_sheets):
+        candidates = get_results(test_sheets)
         for candidate in candidates:
             assert "CandidateNumber" in candidate
-            assert "Mark" in candidate
-            assert "ComponentCode" in candidate
+            assert "Results" in candidate
+
+    @pytest.mark.it("Returns expected number of results")
+    def test_get_results_returns_expected_number(self, test_sheets):
+        candidates = get_results(test_sheets)
+        assert len(candidates) == 105
+
+@pytest.mark.it('Testing get_centre_number function')
+class TestGetCentreNumber:
+    @pytest.fixture
+    def test_sheets(self):
+        test_file = "data/Testing.xlsx"
+        return get_worksheets(test_file)
+
+    @pytest.mark.it('returns integer')
+    def test_get_centre_number_returns_int(self, test_sheets):
+        centre_number = get_centre_number(test_sheets)
+        assert isinstance(centre_number, int)
+    
+    @pytest.mark.it('returns expected number')
+    def test_get_centre_number_returns_expected_cn(self, test_sheets):
+        centre_number = get_centre_number(test_sheets)
+        assert centre_number == 10000

@@ -104,4 +104,14 @@ def get_results(sheets: list) -> list:
         
     return results
 
-# get centre number
+def get_centre_number(sheets: list) -> int:
+    "Gets candidate number"
+    centre_number = 0
+    if sheets:
+        sheet = sheets[0]
+        for cell in sheet['C']:
+            if isinstance(cell.value, str) and cell.value.lower() == "centre number":
+                centre_number = sheet.cell(cell.row + 1, cell.column).value
+                break
+    return centre_number
+
