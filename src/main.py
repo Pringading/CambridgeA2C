@@ -1,19 +1,29 @@
-from dotenv import load_dotenv
-from os import environ
+from read_excel import (
+    get_worksheets,
+    get_date,
+    get_results,
+    get_centre_number
+)
 
-load_dotenv()
+# User prompts
+filepath = ""
 
+# Get Data
+sheets = get_worksheets(filepath)
+date = get_date(sheets)
+results = get_results(sheets)
+centre_number = get_centre_number(sheets)
+year = int(date[:4])
+
+print(results)
 # Variables
-YEAR = 2024
 EXAM_BOARD = "02"
-CENTRE_NUMBER = environ.get("CENTRE_NUMBER")
 MESSAGE_ID = "00000000-0000-0000-0000-000000000000"
 
-# calculated variables
-DATE = str(YEAR) + "-08-13"
+# Calculated Variables
 organisations = [
     "JCQ",
-    CENTRE_NUMBER,
+    centre_number,
     EXAM_BOARD,
 ]
-FILENAME = f"a2c.{str(CENTRE_NUMBER)}.{EXAM_BOARD}.EDIResults.{MESSAGE_ID}.xml"
+FILENAME = f"a2c.{str(centre_number)}.{EXAM_BOARD}.EDIResults.{MESSAGE_ID}.xml"
