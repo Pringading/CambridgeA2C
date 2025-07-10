@@ -66,9 +66,10 @@ class TestGetTitles:
     def test_row(self):
         syllabus = Cell(worksheet=None, row=1, column=1, value="Syllabus")
         cand = Cell(worksheet=None, row=1, column=3, value="Candidate number")
+        name = Cell(worksheet=None, row=1, column=8, value="Candidate name")
         comp_01 = Cell(worksheet=None, row=1, column=3, value="Component 01")
         comp_20 = Cell(worksheet=None, row=1, column=5, value="Component 20")
-        return (syllabus, cand, comp_01, comp_20)
+        return (syllabus, cand, name, comp_01, comp_20)
 
     @pytest.mark.it("Returns dictionary")
     def test_get_titles_returns_dict(self, test_row):
@@ -79,6 +80,7 @@ class TestGetTitles:
     def test_get_titles_returns_expected_keys(self, test_row):
         titles = get_titles("0000", test_row)
         assert "CandidateNumber" in titles
+        assert "CandidateName" in titles
         assert "Components" in titles
 
     @pytest.mark.it("Returns expected component values")
@@ -105,13 +107,14 @@ class TestGetSheetResults:
         for result in results:
             assert isinstance(result, dict)
 
-    @pytest.mark.it("Dictionaries contain candidate number")
-    def test_get_results_has_candidate_no(self):
+    @pytest.mark.it("Dictionaries contain candidate number and candidate name")
+    def test_get_results_has_candidate_no_and_name(self):
         test_file = "data/Testing.xlsx"
         sheets = get_worksheets(test_file)
         results = get_sheet_results(sheets[0])
         for result in results:
             assert isinstance(result["CandidateNumber"], int)
+            assert isinstance(result["CandidateName"], str)
 
     @pytest.mark.it("Dictionaries contain expected keys")
     def test_get_results_dict_keys(self):

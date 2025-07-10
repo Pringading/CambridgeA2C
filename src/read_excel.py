@@ -87,6 +87,8 @@ def get_titles(option: str, row: tuple) -> dict:
     for cell in row:
         if cell.value == "Candidate number":
             titles["CandidateNumber"] = cell.column
+        if cell.value == "Candidate name":
+            titles["CandidateName"] = cell.column
         if isinstance(cell.value, str) and "component" in cell.value.lower():
             component = option + cell.value[-2:]
             titles["Components"].append((cell.column, component))
@@ -110,6 +112,7 @@ def get_sheet_results(sheet: Worksheet) -> list:
 
     # get results
     candidate_col = titles["CandidateNumber"]
+    name_col = titles["CandidateName"]
     result_cols = titles["Components"]
     start += 1
     for row in range(start, 2000):
@@ -117,6 +120,7 @@ def get_sheet_results(sheet: Worksheet) -> list:
             break
         candidate = {}
         candidate["CandidateNumber"] = sheet.cell(row, candidate_col).value
+        candidate["CandidateName"] = sheet.cell(row, name_col).value
         candidate["Results"] = []
         for col, component in result_cols:
             mark = sheet.cell(row, col).value
