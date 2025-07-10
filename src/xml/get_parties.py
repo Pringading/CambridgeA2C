@@ -13,3 +13,12 @@ def get_pupils(pupils: list) -> list:
             }
         )
     return parties
+
+
+def get_organisations(orgs: list):
+    org_parties = [{
+            "Party_ID": {"Party_Id": org},
+            "Party_Type": "Organisation",
+            "Organisation": None
+        } for org in orgs]
+    return org_parties
