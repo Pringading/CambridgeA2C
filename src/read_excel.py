@@ -15,12 +15,17 @@ def get_worksheets(filename: str) -> list[Worksheet]:
     from Cambridge International component marks sheet.
     """
 
+    # filter warning about header & footer
     filterwarnings(
         "ignore",
         message="Cannot parse header or footer so it will be ignored"
     )
+
+    # get workbook
     wb = load_workbook(filename=filename)
     sheets = []
+
+    # filter out sheets that are not named with a 4 digit number
     for sheet in wb.worksheets:
         if len(sheet.title) == 4 and sheet.title[0].isdigit():
             sheets.append(sheet)
@@ -36,7 +41,10 @@ def get_date(sheets: list) -> str:
     If date not found returns today's date.
     """
 
+    # default date is today
     parsed_date = datetime.now()
+
+    # search first column for cell containing date report generated
     if sheets:
         sheet = sheets[0]
         for cell in sheet['A']:
@@ -44,7 +52,11 @@ def get_date(sheets: list) -> str:
             if isinstance(val, str) and "Report generated" in val:
                 date = cell.value[20:]
                 break
+
+        # get date from string
         parsed_date = datetime.strptime(date, r"%d%b%Y")
+    
+    # change date to yyyy-mm-dd format
     formatted_date = datetime.strftime(parsed_date, r"%Y-%m-%d")
     return formatted_date
 

@@ -39,13 +39,15 @@ def get_filepath():
     if len(filename) > 5 and filename[-5:] != ".xlsx":
         filename += ".xlsx"
 
-    # checking file exists in cambridge-a2c/data folder
+    # ask for input again if file doesn't exist in cambridge-a2c/data folder
     while not isfile(filepath + filename):
         print(
             f"File {filename} not found in cambridge-a2c/data folder," +
             " (only accepts .xlsx files)"
         )
         filename = input("Please enter filename again: ")
+
+        # add file extension
         if len(filename) > 5 and filename[-5:] != ".xlsx":
             filename += ".xlsx"
     return filepath + filename
