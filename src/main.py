@@ -4,6 +4,11 @@ from read_excel import (
     get_results,
     get_centre_number
 )
+from read_csv import (
+    get_csv_data,
+    dict_from_candidates,
+    results_and_candidates
+)
 from user_prompts import get_filepath
 
 # User prompts
@@ -15,6 +20,11 @@ date = get_date(sheets)
 results = get_results(sheets)
 centre_number = get_centre_number(sheets)
 year = int(date[:4])
+
+# Get csv data
+csv_data = get_csv_data("data/candidates.csv")
+candidates = dict_from_candidates(csv_data)
+all_data = results_and_candidates(candidates, results)
 
 # Variables
 EXAM_BOARD = "02"
