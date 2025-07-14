@@ -1,0 +1,66 @@
+import pytest
+from src.xml.relationships import get_relationships, get_other_relationships
+from src.read_excel import get_worksheets, get_results
+from src.read_csv import (
+    get_csv_data,
+    dict_from_candidates,
+    results_and_candidates
+)
+
+
+@pytest.mark.it('Testing get_relationships function')
+class TestGetRelationships:
+    @pytest.fixture(scope="class")
+    def test_args(self):
+        orgs = ["JCQ", 10000, "02"]
+        filepath = "data/Testing.xlsx"
+        sheets = get_worksheets(filepath)
+        results = get_results(sheets)
+        csv_data = get_csv_data("data/candidates.csv")
+        candidates = dict_from_candidates(csv_data)
+        all_data = results_and_candidates(candidates, results)
+        return {
+            "pupils": all_data,
+            "organisations": orgs,
+            "date": "2025-07-07"
+        }
+
+    @pytest.mark.it("Returns list")
+    def test_returns_list(self, test_args):
+        relationships = get_relationships(**test_args)
+        assert isinstance(relationships, list)
+    
+    @pytest.mark.it("Returns list of dictionaries")
+    def test_returns_list_of_dicts(self, test_args):
+        relationships = get_relationships(**test_args)
+        for relationship in relationships:
+            assert isinstance(relationship, dict)
+
+    @pytest.mark.it("Returns list of expected length")
+    def test_returns_list_of_expected_length(self, test_args):
+        expected_length = len(test_args["pupils"]) 
+        expected_length *= len(test_args["organisations"])
+        relationships = get_relationships(**test_args)
+        assert len(relationships) == expected_length
+
+    @pytest.mark.it("Expected data on expected keys of dictioary")
+    def test_expected_data_on_expected_keys(self, test_args):
+        relationships = get_relationships(**test_args)
+        for r in relationships:
+            assert r["Party_Relationship_Eff_Date"] == "2025-07-07"
+            assert isinstance(r["PartyRelationship_ID"], dict)
+
+    @pytest.mark.it("Points to valid UCI number and organisation ID")
+    def test_valid_uci_and_org(self, test_args):
+        orgs = test_args["organisations"]
+        ucis = [p["UCI"] for p in test_args["pupils"]]
+        relationships = get_relationships(**test_args)
+        for r in relationships:
+            parties = r["PartyRelationship_ID"]
+            assert parties["Party_Id_1st"] in orgs
+            assert parties["Party_Id_2nd"] in ucis
+
+
+@pytest.mark.it('Testing get_other_relationships function')
+class TestGetOtherRelationships:
+    pass
