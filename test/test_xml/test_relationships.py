@@ -1,27 +1,14 @@
 import pytest
 from src.xml.relationships import get_relationships, get_other_relationships
-from src.read_excel import get_worksheets, get_results
-from src.read_csv import (
-    get_csv_data,
-    dict_from_candidates,
-    results_and_candidates
-)
 
 
 @pytest.mark.it('Testing get_relationships function')
 class TestGetRelationships:
     @pytest.fixture(scope="class")
-    def test_args(self):
-        orgs = ["JCQ", 10000, "02"]
-        filepath = "data/Testing.xlsx"
-        sheets = get_worksheets(filepath)
-        results = get_results(sheets)
-        csv_data = get_csv_data("data/candidates.csv")
-        candidates = dict_from_candidates(csv_data)
-        all_data = results_and_candidates(candidates, results)
+    def test_args(self, test_orgs, test_results):
         return {
-            "pupils": all_data,
-            "organisations": orgs,
+            "pupils": test_results,
+            "organisations": test_orgs,
             "date": "2025-07-07"
         }
 

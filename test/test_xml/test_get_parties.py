@@ -10,44 +10,34 @@ from src.read_csv import (
 
 @pytest.mark.it('Testing get_pupils function')
 class TestGetPupils:
-    @pytest.fixture(scope="class")
-    def test_pupils(self):
-        filepath = "data/Testing.xlsx"
-        sheets = get_worksheets(filepath)
-        results = get_results(sheets)
-        csv_data = get_csv_data("data/candidates.csv")
-        candidates = dict_from_candidates(csv_data)
-        all_data = results_and_candidates(candidates, results)
-        return all_data
-
     @pytest.mark.it('Returns list')
     def test_get_pupils_returns_list(self):
         parties = get_pupils([])
         assert isinstance(parties, list)
 
     @pytest.mark.it('Returned list length same as input list length')
-    def test_list_length(self, test_pupils):
-        expected_length = len(test_pupils)
-        parties = get_pupils(test_pupils)
+    def test_list_length(self, test_results):
+        expected_length = len(test_results)
+        parties = get_pupils(test_results)
         assert len(parties) == expected_length
 
     @pytest.mark.it('Returns list of dictionaries')
-    def test_list_of_dicts(self, test_pupils):
-        parties = get_pupils(test_pupils)
+    def test_list_of_dicts(self, test_results):
+        parties = get_pupils(test_results)
         for party in parties:
             assert isinstance(party, dict)
 
     @pytest.mark.it('Each dictionary has expected key value pairs')
-    def test_expected_keys_(self, test_pupils):
-        parties = get_pupils(test_pupils)
+    def test_expected_keys_(self, test_results):
+        parties = get_pupils(test_results)
         for party in parties:
             assert "Party_ID" in party
             assert party["Party_Type"] == "Person"
             assert isinstance(party["Person"], dict)
 
     @pytest.mark.it('Dictionary with Party ID on Candidate')
-    def test_party_id_contains_expected(self, test_pupils):
-        parties = get_pupils(test_pupils)
+    def test_party_id_contains_expected(self, test_results):
+        parties = get_pupils(test_results)
         for party in parties:
             party_id = party["Party_ID"]
             assert isinstance(party_id, dict)
