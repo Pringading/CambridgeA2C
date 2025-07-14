@@ -1,16 +1,24 @@
 import pytest
 from src.xml.get_parties import get_pupils, get_organisations
 from src.read_excel import get_worksheets, get_results
+from src.read_csv import (
+    get_csv_data,
+    dict_from_candidates,
+    results_and_candidates
+)
 
 
 @pytest.mark.it('Testing get_pupils function')
 class TestGetPupils:
-    @pytest.fixture
+    @pytest.fixture(scope="class")
     def test_pupils(self):
         filepath = "data/Testing.xlsx"
         sheets = get_worksheets(filepath)
         results = get_results(sheets)
-        return results
+        csv_data = get_csv_data("data/candidates.csv")
+        candidates = dict_from_candidates(csv_data)
+        all_data = results_and_candidates(candidates, results)
+        return all_data
 
     @pytest.mark.it('Returns list')
     def test_get_pupils_returns_list(self):
@@ -35,7 +43,7 @@ class TestGetPupils:
         for party in parties:
             assert "Party_ID" in party
             assert party["Party_Type"] == "Person"
-            assert party["Person"] is None
+            assert isinstance(party["Person"], dict)
 
     @pytest.mark.it('Dictionary with Party ID on Candidate')
     def test_party_id_contains_expected(self, test_pupils):

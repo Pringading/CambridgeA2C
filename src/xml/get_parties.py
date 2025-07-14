@@ -4,12 +4,13 @@ def get_pupils(pupils: list) -> list:
     for pupil in pupils:
         parties.append(
             {
-                # change from uci to candidate number
-                "Party_ID": {"Party_Id": pupil["CandidateNumber"]},
+                "Party_ID": {"Party_Id": pupil["UCI"]},
                 "Party_Type": "Person",
 
-                # dict including dob and gender
-                "Person": None
+                "Person": {
+                    "Date_Of_Birth": pupil["DOB"],
+                    # "Legal_Sex_Type": "Female"
+                }
             }
         )
     return parties
