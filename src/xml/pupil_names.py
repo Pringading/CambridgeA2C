@@ -11,7 +11,11 @@ def get_party_name_comp(order: int, type: str, name: str):
 
 def get_names(pupils: list, date: str):
     name_list = []
+    candidates = []
     for pupil in pupils:
+        if pupil["UCI"] in candidates:
+            continue
+        candidates.append(pupil["UCI"])
         surname, forename = pupil["CandidateName"].split(": ")
         forename_comp = get_party_name_comp(1, "Given", forename)
         surname_comp = get_party_name_comp(2, "Family", surname)

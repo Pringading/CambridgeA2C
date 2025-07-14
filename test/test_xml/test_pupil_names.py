@@ -54,9 +54,12 @@ class TestGetNames:
 
     @pytest.mark.it('List is expected length')
     def test_list_is_expected_length(self, names_args):
-        expected_length = len(names_args["pupils"])
+        candidates = []
+        for c in names_args["pupils"]:
+            if c["UCI"] not in candidates:
+                candidates.append(c["UCI"])
         names = get_names(**names_args)
-        assert len(names) == expected_length
+        assert len(names) == len(candidates)
 
     @pytest.mark.it('Each dictionary has expected keys')
     def test_dictionary_has_expected_keys(self, names_args):
@@ -96,3 +99,9 @@ class TestGetNames:
             components = name["PartyName_CN"]["PartyNameComponent"]
             for comp in components:
                 assert comp["Party_Name_Component"] in input_name
+    
+    @pytest.mark.it("Test no duplicates in returned list")
+    def test_no_duplicates_in_list(self, names_args):
+        names = get_names(**names_args)
+        for i, name in enumerate(names):
+            assert name not in names[i + 1: ]

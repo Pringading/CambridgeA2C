@@ -42,8 +42,8 @@ class TestGetPupils:
             assert isinstance(party_id, dict)
             assert "Party_Id" in party_id
         
-    @pytest.mark.it("No duplicates in list")
-    def test_party_id_contains_expected(self, test_results):
+    @pytest.mark.it("No duplicates in returned list")
+    def test_no_duplicates_in_list(self, test_results):
         parties = get_pupils(test_results)
         for i, party in enumerate(parties):
             assert party not in parties[i + 1: ]
