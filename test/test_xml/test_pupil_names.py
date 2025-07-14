@@ -1,5 +1,11 @@
 import pytest
 from src.xml.pupil_names import get_party_name_comp, get_names
+from src.read_excel import get_worksheets, get_results
+from src.read_csv import (
+    get_csv_data,
+    dict_from_candidates,
+    results_and_candidates
+)
 
 
 @pytest.mark.it('Testing get_party_name_comp function')
@@ -34,4 +40,72 @@ class TestGetPartyNameComp:
 
 @pytest.mark.it('Testing get_names function')
 class TestGetNames:
-    pass
+    @pytest.fixture(scope="class")
+    def names_args(self):
+        filepath = "data/Testing.xlsx"
+        sheets = get_worksheets(filepath)
+        results = get_results(sheets)
+        csv_data = get_csv_data("data/candidates.csv")
+        candidates = dict_from_candidates(csv_data)
+        all_data = results_and_candidates(candidates, results)
+        args = {
+            "pupils": all_data,
+            "date": "2025-07-07"
+        }
+        return args
+
+    @pytest.mark.it('Returns list')
+    def test_returns_list(self):
+        names = get_names([], "")
+        assert isinstance(names, list)
+
+    @pytest.mark.it('Returns list of dictionaries')
+    def test_returns_list_of_dicts(self, names_args):
+        names = get_names(**names_args)
+        for name in names:
+            assert isinstance(name, dict)
+
+    @pytest.mark.it('List is expected length')
+    def test_list_is_expected_length(self, names_args):
+        expected_length = len(names_args["pupils"])
+        names = get_names(**names_args)
+        assert len(names) == expected_length
+
+    @pytest.mark.it('Each dictionary has expected keys')
+    def test_dictionary_has_expected_keys(self, names_args):
+        expected_length = len(names_args["pupils"])
+        names = get_names(**names_args)
+        assert len(names) == expected_length
+
+    @pytest.mark.it('Each dictionary has expected keys')
+    def test_dictionary_has_expected_keys(self, names_args):
+        names = get_names(**names_args)
+        for name in names:
+            assert "Party_ID" in name
+            assert "PartyName_CN" in name
+
+    @pytest.mark.it('Each dictionary correct party id')
+    def test_dictionary_has_correct_party_id(self, names_args):
+        pupils = names_args["pupils"]
+        names = get_names(**names_args)
+        for i, name in enumerate(names):
+            party_id = name["Party_ID"]["Party_Id"]
+            assert party_id == pupils[i]["UCI"]
+
+    @pytest.mark.it('Each dictionary correct partyname_cn')
+    def test_dictionary_has_correct_party_name_cn(self, names_args):
+        names = get_names(**names_args)
+        for name in names:
+            partyname_id = name["PartyName_CN"]["PartyName_ID"]
+            assert partyname_id["Party_Name_Type"] == "Full"
+            assert partyname_id["Party_Name_Effective_Date"] == "2025-07-07"
+        
+    @pytest.mark.it("Each dictionary contains expected names")
+    def test_dictionary_containd_expected_names(self, names_args):
+        input_names = names_args["pupils"]
+        names = get_names(**names_args)
+        for i, name in enumerate(names):
+            input_name = input_names[i]["CandidateName"]
+            components = name["PartyName_CN"]["PartyNameComponent"]
+            for comp in components:
+                assert comp["Party_Name_Component"] in input_name
