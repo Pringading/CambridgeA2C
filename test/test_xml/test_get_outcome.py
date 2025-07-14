@@ -1,8 +1,13 @@
 import pytest
 from src.xml.get_outcome import get_outcome_cn, get_outcomes
 from src.read_excel import get_worksheets, get_results
+from src.read_csv import (
+    get_csv_data,
+    dict_from_candidates,
+    results_and_candidates
+)
 
-@pytest.mark.skip()
+
 @pytest.mark.it('Test get_outcome_cn function')
 class TestGetOutcomeCN:
     @pytest.fixture
@@ -44,13 +49,16 @@ class TestGetOutcomeCN:
 
 @pytest.mark.it('Test get_outcomes function')
 class TestGetOutcomes:
-    @pytest.fixture
+    @pytest.fixture(scope="class")
     def outcome_args(self):
         filepath = "data/Testing.xlsx"
         sheets = get_worksheets(filepath)
-        pupils = get_results(sheets)
+        results = get_results(sheets)
+        csv_data = get_csv_data("data/candidates.csv")
+        candidates = dict_from_candidates(csv_data)
+        all_data = results_and_candidates(candidates, results)
         args = {
-            "pupils": pupils,
+            "pupils": all_data,
             "exam_board": "02",
             "timestamp": "timestamp",
             "date": "2025-07-07"

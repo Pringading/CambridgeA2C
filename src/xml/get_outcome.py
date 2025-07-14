@@ -38,7 +38,7 @@ def get_outcomes(pupils: list, exam_board: str, timestamp: str, date: str):
         outcome = {
             "PartyRelationship_ID": {
                     "Party_Id_Originator": exam_board,
-                    "Learner_Party_Id" : pupil["CandidateNumber"] #use uci?
+                    "Learner_Party_Id" : pupil["UCI"]
                 },
             "QEOutcome_CN": outcome_cns
         }
