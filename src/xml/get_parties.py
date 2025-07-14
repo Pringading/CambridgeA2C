@@ -1,7 +1,11 @@
 def get_pupils(pupils: list) -> list:
 
     parties = []
+    candidates = []
     for pupil in pupils:
+        if pupil["UCI"] in candidates:
+            continue
+        candidates.append(pupil["UCI"])
         parties.append(
             {
                 "Party_ID": {"Party_Id": pupil["UCI"]},

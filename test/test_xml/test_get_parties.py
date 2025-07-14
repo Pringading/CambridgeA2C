@@ -13,9 +13,12 @@ class TestGetPupils:
 
     @pytest.mark.it('Returned list length same as input list length')
     def test_list_length(self, test_results):
-        expected_length = len(test_results)
+        candidates = []
+        for c in test_results:
+            if c["UCI"] not in candidates:
+                candidates.append(c["UCI"])
         parties = get_pupils(test_results)
-        assert len(parties) == expected_length
+        assert len(parties) == len(candidates)
 
     @pytest.mark.it('Returns list of dictionaries')
     def test_list_of_dicts(self, test_results):
@@ -38,6 +41,12 @@ class TestGetPupils:
             party_id = party["Party_ID"]
             assert isinstance(party_id, dict)
             assert "Party_Id" in party_id
+        
+    @pytest.mark.it("No duplicates in list")
+    def test_party_id_contains_expected(self, test_results):
+        parties = get_pupils(test_results)
+        for i, party in enumerate(parties):
+            assert party not in parties[i + 1: ]
 
 
 @pytest.mark.it('Testing get organisations function')
