@@ -1,15 +1,11 @@
 import pytest
 from src.xml.get_parties import get_pupils, get_organisations
-from src.read_excel import get_worksheets, get_results
-from src.read_csv import (
-    get_csv_data,
-    dict_from_candidates,
-    results_and_candidates
-)
 
 
 @pytest.mark.it('Testing get_pupils function')
 class TestGetPupils:
+    """tests use test_results fixture from conftest."""
+    
     @pytest.mark.it('Returns list')
     def test_get_pupils_returns_list(self):
         parties = get_pupils([])
