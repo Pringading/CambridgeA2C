@@ -1,4 +1,5 @@
 import pytest
+from src.read_excel import get_worksheets, get_results
 from src.read_csv import (
     get_csv_data,
     dict_from_candidates,
@@ -54,13 +55,14 @@ class TestDictFromCandidates:
     def test_all_candidates_keys_in_dict(self, c_list):
         c_dict = dict_from_candidates(c_list)
         for c in c_list:
-            assert c["Candidate Number"] in c_dict
+            c_num = int(c["Candidate Number"])
+            assert c_num in c_dict
     
     @pytest.mark.it("All UCIs in dict on candidate key")
     def test_all_ucis_in_dict_on_key(self, c_list):
         c_dict = dict_from_candidates(c_list)
         for c in c_list:
-            c_num = c["Candidate Number"]
+            c_num = int(c["Candidate Number"])
             expected_uci = c["UCI"]
             assert c_dict[c_num]["UCI"] == expected_uci
         
@@ -68,13 +70,52 @@ class TestDictFromCandidates:
     def test_all_dob_in_dict_on_key(self, c_list):
         c_dict = dict_from_candidates(c_list)
         for c in c_list:
-            c_num = c["Candidate Number"]
+            c_num = int(c["Candidate Number"])
             expected_dob = c["Date of Birth"]
             assert c_dict[c_num]["DOB"] == expected_dob
 
 
 @pytest.mark.it("Testing results_and_candidates function")
 class TestResultsAndCandidates:
+    @pytest.fixture
+    def test_args(self):
+        c_list = get_csv_data("data/candidates.csv")
+        c_dict = dict_from_candidates(c_list)
+        sheets = get_worksheets("data/Testing.xlsx")
+        results = get_results(sheets)
+        return {
+            "candidates": c_dict,
+            "results": results
+
+        }
+
     @pytest.mark.it("Returns list")
-    def test_returns_list(self):
-        pass
+    def test_returns_list(self, test_args):
+        results = results_and_candidates(**test_args)
+        assert isinstance(results, list)
+    
+    @pytest.mark.it("Returns list of dicts")
+    def test_returns_list_of_dicts(self, test_args):
+        results = results_and_candidates(**test_args)
+        for result in results:
+            assert isinstance(result, dict)
+    
+    @pytest.mark.it("Returns new list")
+    def test_returns_new_list(self, test_args):
+        input_list = test_args["results"]
+        output_list = results_and_candidates(**test_args)
+        assert input_list is not output_list
+    
+    @pytest.mark.it("New list has dicts with UCI and DOB keys")
+    def test_adds_uci_and_dob_keys(self, test_args):
+        output_list = results_and_candidates(**test_args)
+        for result in output_list:
+            assert "UCI" in result
+            assert "DOB" in result
+    
+    @pytest.mark.it("Input list is not mutated")
+    def test_input_list_not_mutated(self, test_args):
+        sheets = get_worksheets("data/Testing.xlsx")
+        original_input = get_results(sheets)
+        results_and_candidates(**test_args)
+        assert test_args["results"] == original_input
