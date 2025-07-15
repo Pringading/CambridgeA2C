@@ -1,8 +1,10 @@
 from src.xml.get_parties import get_pupils, get_organisations
 from src.xml.pupil_names import get_names
 
-def get_party_ds(pupils: list, organisations: list) -> dict:
-    pupil_parties = get_pupils(pupils)
+def get_party_ds(results: list, organisations: list) -> dict:
+    """returns dictionary with party information"""
+
+    pupil_parties = get_pupils(results)
     org_parties = get_organisations(organisations)
     party_ds = {
         "DataBlockName": "Party_DS",
@@ -12,8 +14,16 @@ def get_party_ds(pupils: list, organisations: list) -> dict:
     }
     return party_ds
 
-def get_party_name_ds():
-    pass
+def get_party_name_ds(results: list, date: str):
+    """Returns dictionary with party name information"""
+
+    party_name_ds = {
+        "DataBlockName": "PartyName_DS",
+        "PartyName_DS": {
+            "PartyName": get_names(results, date)
+        }
+    }
+    return party_name_ds
 
 def get_party_relationship_ds():
     pass
