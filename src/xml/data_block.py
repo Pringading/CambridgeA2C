@@ -55,16 +55,27 @@ def get_party_relationship_role_ds(centre: int, board: str, results: list, date:
     }
     return party_relationship_role_ds
 
-def get_qe_outcome_ds():
-    pass
+def get_qe_outcome_ds(results: list, board: str, timestamp: str, date: str):
+    """returns dictionary with outcome information."""
+
+    outcomes = get_outcomes(results, board, timestamp, date)
+    qe_outcome_ds = {
+        "DataBlockName": "QEOutcome_DS",
+        "QEOutcome_DS": {
+            "QEOutcome": outcomes
+        }
+    }
+    return qe_outcome_ds
     
 
-def get_data_block(results: list, organisations: list, date: str, centre: int, board: str):
+def get_data_block(results: list, organisations: list, date: str, centre: int, board: str, timestamp: str):
+    """returns list with all information contained in data block."""
+
     data_block = [
         get_party_ds(results, organisations),
         get_party_name_ds(results, date),
         get_party_relationship_ds(results, organisations, date, centre, board),
         get_party_relationship_role_ds(centre, board, results, date),
-        get_qe_outcome_ds()
+        get_qe_outcome_ds(results, board, timestamp, date)
     ]
     return data_block
