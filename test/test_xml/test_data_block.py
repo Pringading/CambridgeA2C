@@ -75,7 +75,41 @@ class TestGetPartyNameDS:
 
 @pytest.mark.it('Testing get_party_relationship_ds function')
 class TestGetPartyRelationshipDS:
-    pass
+    @pytest.fixture(scope="class")
+    def test_args(self, test_results, test_orgs):        
+        return {
+            "results": test_results,
+            "organisations": test_orgs,
+            "date": "2025-07-07",
+            "centre": 10000,
+            "board": "02"
+        }
+
+    @pytest.mark.it("Returns dict")
+    def test_returns_dict(self, test_args):
+        relationships = get_party_relationship_ds(**test_args)
+        assert isinstance(relationships, dict)
+    
+    @pytest.mark.it("Dictionary has expected key-value pairs")
+    def test_dictionary_has_expected_key_values(self, test_args):
+        relationships = get_party_relationship_ds(**test_args)
+        r_list = relationships["PartyRelationship_DS"]["PartyRelationship"]
+        assert relationships["DataBlockName"] == "PartyRelationship_DS"
+        assert isinstance(r_list, list)
+
+    @patch("src.xml.data_block.get_relationships")
+    @pytest.mark.it("Calls get_relationships function")
+    def test_calls_get_relationsihps(self, mock_re, test_args):
+        mock_re = Mock(return_value=[])
+        get_party_relationship_ds(**test_args)
+        mock_re.assert_called_once
+
+    @patch("src.xml.data_block.get_other_relationships")
+    @pytest.mark.it("Calls get_other_relationships function")
+    def test_calls_get_other_relationships(self, mock_other, test_args):
+        mock_other = Mock(return_value=[])
+        get_party_relationship_ds(**test_args)
+        mock_other.assert_called_once
 
 
 @pytest.mark.it('Testing get_party_relationship_role_ds function')
