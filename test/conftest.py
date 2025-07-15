@@ -6,11 +6,16 @@ from src.read_csv import (
     results_and_candidates
 )
 
+
 @pytest.fixture(scope="session")
-def test_results():
+def test_sheets():
     filepath = "data/Testing.xlsx"
-    sheets = get_worksheets(filepath)
-    results = get_results(sheets)
+    return get_worksheets(filepath)
+
+
+@pytest.fixture(scope="session")
+def test_results(test_sheets):
+    results = get_results(test_sheets)
     csv_data = get_csv_data("data/candidates.csv")
     candidates = dict_from_candidates(csv_data)
     all_data = results_and_candidates(candidates, results)

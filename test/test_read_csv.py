@@ -1,9 +1,11 @@
 import pytest
+from unittest.mock import patch, Mock
 from src.read_excel import get_worksheets, get_results
 from src.read_csv import (
     get_csv_data,
     dict_from_candidates,
-    results_and_candidates
+    results_and_candidates,
+    get_all_data
 )
 
 
@@ -140,3 +142,52 @@ class TestResultsAndCandidates:
             candidate = result["CandidateNumber"]
             assert result["UCI"] == c_dict[candidate]["UCI"]
             assert result["DOB"] == c_dict[candidate]["DOB"]
+
+@pytest.mark.it("Testing get_all_data function")
+class TestGetAllData:
+    @pytest.fixture(scope="class")
+    def test_args(self, test_sheets):
+        return {
+            "sheets": test_sheets,
+            "filepath": "data/candidates.csv"
+        }
+    
+    @pytest.mark.it("Test returns list")
+    def test_returns_list(self, test_args):
+        all_data = get_all_data(**test_args)
+        assert isinstance(all_data, list)
+    
+    @patch("src.read_csv.get_results")
+    @pytest.mark.it("calls get_results function")
+    def test_calls_get_results_function(self, mock_results, test_args):
+        mock_results = Mock(return_value=[])
+        get_all_data(**test_args)
+        mock_results.assert_called_once
+    
+    @patch("src.read_csv.get_csv_data")
+    @pytest.mark.it("calls get_csv_data function")
+    def test_calls_get_csv_data_function(self, mock_csv, test_args):
+        mock_csv = Mock(return_value=[])
+        get_all_data(**test_args)
+        mock_csv.assert_called_once
+    
+    @patch("src.read_csv.dict_from_candidates")
+    @pytest.mark.it("calls dict_from_candidates function")
+    def test_calls_dict_from_candidates_function(self, mock_dict, test_args):
+        mock_dict = Mock(return_value={})
+        get_all_data(**test_args)
+        mock_dict.assert_called_once
+    
+    @patch("src.read_csv.dict_from_candidates")
+    @pytest.mark.it("calls dict_from_candidates function")
+    def test_calls_dict_from_candidates_function(self, mock_dict, test_args):
+        mock_dict = Mock(return_value={})
+        get_all_data(**test_args)
+        mock_dict.assert_called_once
+    
+    @patch("src.read_csv.results_and_candidates")
+    @pytest.mark.it("calls results_and_candidates function")
+    def test_calls_results_and_candidates_function(self, mock_res, test_args):
+        mock_res = Mock()
+        get_all_data(**test_args)
+        mock_res.assert_called_once

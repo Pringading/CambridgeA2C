@@ -1,6 +1,7 @@
 from csv import DictReader
 from copy import deepcopy
 from datetime import datetime
+from src.read_excel import get_results
 
 
 def get_csv_data(filepath: str) -> list:
@@ -73,8 +74,28 @@ def results_and_candidates(candidates: dict, results: list) -> list:
     data = []
     for result in results:
         candidate = result["CandidateNumber"]
+        if candidate not in candidates:
+            print("UCI & DOB not found for Candidate: " + str(candidate))
+            continue
         new_result = deepcopy(result)
         new_result["DOB"] = candidates[candidate]["DOB"]
         new_result["UCI"] = candidates[candidate]["UCI"]
         data.append(new_result)
     return data
+
+
+def get_all_data(sheets: list, filepath: str) -> list:
+    """Takes list of excel sheets and filepath to csv file and returns list of
+    results data.
+    
+    Args:
+        sheets(list): List of excel sheets data with cambridge results info
+        filepath(str): relative path to csv file with candidate info:
+            "UCI", "Candidate Number" & "Date of Birth"
+    """
+    
+    results = get_results(sheets)
+    csv_data = get_csv_data(filepath)
+    candidates = dict_from_candidates(csv_data)
+    all_data = results_and_candidates(candidates, results)
+    return all_data
