@@ -177,14 +177,13 @@ class TestGetQEOutcomeDS:
 @pytest.mark.it('Testing get_data_block function')
 class TestDataBlockDS:
     @pytest.fixture(scope="class")
-    def test_args(self, test_results, test_orgs):        
+    def test_args(self, test_sheets):        
         return {
-            "results": test_results,
-            "organisations": test_orgs,
-            "date": "2025-07-07",
+            "sheets": test_sheets,
             "centre": 10000,
             "board": "02",
-            "timestamp": "timestamp"
+            "timestamp": "timestamp",
+            "csv_filepath": "data/candidates.csv"
         }
 
     @pytest.mark.it("Returns list")
@@ -238,3 +237,17 @@ class TestDataBlockDS:
         mock_outcomes = Mock(return_value=[])
         get_data_block(**test_args)
         mock_outcomes.assert_called_once
+
+    @patch("src.xml.data_block.get_date")
+    @pytest.mark.it("Calls get_date function")
+    def test_calls_get_date_function(self, mock_date, test_args):
+        mock_date = Mock(return_value="2025-07-07")
+        get_data_block(**test_args)
+        mock_date.assert_called_once
+    
+    @patch("src.xml.data_block.get_all_data")
+    @pytest.mark.it("Calls get_all_data function")
+    def test_calls_get_all_data_function(self, mock_data, test_args):
+        mock_data = Mock(return_value=[])
+        get_data_block(**test_args)
+        mock_data.assert_called_once
