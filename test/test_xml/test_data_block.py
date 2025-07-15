@@ -114,7 +114,33 @@ class TestGetPartyRelationshipDS:
 
 @pytest.mark.it('Testing get_party_relationship_role_ds function')
 class TestPartyRelationshipRoleDS:
-    pass
+    @pytest.fixture(scope="class")
+    def test_args(self, test_results):        
+        return {
+            "results": test_results,
+            "date": "2025-07-07",
+            "centre": 10000,
+            "board": "02"
+        }
+
+    @pytest.mark.it("Returns dict")
+    def test_returns_dict(self, test_args):
+        roles = get_party_relationship_role_ds(**test_args)
+        assert isinstance(roles, dict)
+
+    @pytest.mark.it("Dictionary has expected key-value pairs")
+    def test_dictionary_has_expected_key_values(self, test_args):
+        roles = get_party_relationship_role_ds(**test_args)
+        r_list = roles["PartyRelationshipRole_DS"]["PartyRelationshipRole"]
+        assert roles["DataBlockName"] == "PartyRelationshipRole_DS"
+        assert isinstance(r_list, list)
+
+    @patch("src.xml.data_block.get_all_roles")
+    @pytest.mark.it("Calls get_all_roles function")
+    def test_calls_get_all_roles(self, mock_roles, test_args):
+        mock_roles = Mock(return_value=[])
+        get_party_relationship_role_ds(**test_args)
+        mock_roles.assert_called_once
 
 
 @pytest.mark.it('Testing get_qe_outcome_ds function')
