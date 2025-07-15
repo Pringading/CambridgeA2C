@@ -34,8 +34,8 @@ class TestGetRole:
         assert role["Party_RR_Reference_Type"] == "Candidate Number"
 
     @pytest.mark.it("Dictionary has expected key-value pairs on " +
-        "PartyRelationshipRole_ID")
-    def test_has_expected_key_values(self, test_args):
+                    "PartyRelationshipRole_ID")
+    def test_party_relationship_role_expected_key_values(self, test_args):
         role = get_role(test_args)
         role_id = role["PartyRelationshipRole_ID"]
         assert role_id["Party_Id_1st"] == 10000
@@ -50,9 +50,9 @@ class TestGetPupilRoles:
     def test_args(self, test_results):
         return {
             "pupils": test_results,
-            "centre_number": 10000,
+            "centre": 10000,
             "date": "2025-07-07",
-            "exam_board": "02"
+            "board": "02"
         }
 
     @pytest.mark.it("Returns list")
@@ -70,7 +70,7 @@ class TestGetPupilRoles:
     def test_no_duplicates(self, test_args):
         roles = get_pupil_roles(**test_args)
         for i, role in enumerate(roles):
-            assert role not in roles[i+ 1:]
+            assert role not in roles[i + 1:]
 
     @pytest.mark.it("Assert get_role is called expected number of times")
     def test_get_role_called(self, test_args):
@@ -93,10 +93,10 @@ class TestGetOtherRoles:
     def test_args(self):
         return {
             "centre": 10000,
-            "exam_board": "02",
+            "board": "02",
             "date": "2025-07-07"
         }
-    
+
     @pytest.mark.it("Returns list")
     def test_returns_list(self, test_args):
         roles = get_other_roles(**test_args)
@@ -107,16 +107,17 @@ class TestGetOtherRoles:
         roles = get_other_roles(**test_args)
         assert len(roles) == 2
 
+    @patch('src.xml.roles.get_role')
     @pytest.mark.it("get_role function called twice")
-    def test_get_role_function_called_twice(self, test_args):
-        with patch('src.xml.roles.get_role') as mock_get:
-            mock_response = Mock()
-            mock_get.return_value = mock_response
-            get_other_roles(**test_args)
-            assert mock_get.call_count == 2
+    def test_get_role_function_called_twice(self, mock_get, test_args):
+        mock_response = Mock()
+        mock_get.return_value = mock_response
+        get_other_roles(**test_args)
+        assert mock_get.call_count == 2
 
+    @patch('src.xml.roles.get_role')
     @pytest.mark.it("get_role function called with expected args")
-    def test_get_role_args(self, test_args):
+    def test_get_role_args(self, mock_get, test_args):
         call_1 = {
             "party_1": "JCQ",
             "party_2": 10000,
@@ -133,14 +134,49 @@ class TestGetOtherRoles:
             "ref": "02",
             "ref_type": "JCQ Awarding Organisation ID"
         }
-        with patch('src.xml.roles.get_role') as mock_get:
-            mock_response = Mock()
-            mock_get.return_value = mock_response
-            get_other_roles(**test_args)
-            calls = [call(call_1), call(call_2)]
-            mock_get.assert_has_calls(calls)
+        mock_response = Mock()
+        mock_get.return_valye = mock_response
+        get_other_roles(**test_args)
+        calls = [call(call_1), call(call_2)]
+        mock_get.assert_has_calls(calls)
 
 
 @pytest.mark.it('Testing get_all_roles_function')
 class TestGetAllRoles:
-    pass
+    @pytest.fixture(scope="class")
+    def test_args(self, test_results):
+        return {
+            "centre": 10000,
+            "board": "02",
+            "pupils": test_results,
+            "date": "2025-07-07"
+        }
+
+    @pytest.mark.it("Returns list")
+    def test_returns_list(self, test_args):
+        roles = get_all_roles(**test_args)
+        assert isinstance(roles, list)
+
+    @pytest.mark.it("Returns list of expected length")
+    def test_length_of_returned_list(self, test_args):
+        candidates = []
+        for pupil in test_args["pupils"]:
+            if pupil["CandidateNumber"] not in candidates:
+                candidates.append(pupil["CandidateNumber"])
+        expected_length = len(candidates) * 3 + 2
+        roles = get_all_roles(**test_args)
+        assert len(roles) == expected_length
+
+    @patch('src.xml.roles.get_other_roles')
+    @pytest.mark.it("Calls get_other_roles function")
+    def test_calls_get_other_roles(self, mock_other, test_args):
+        mock_other = Mock(return_value=[])
+        get_all_roles(**test_args)
+        mock_other.assert_called_once
+
+    @patch('src.xml.roles.get_pupil_roles')
+    @pytest.mark.it("Calls get_pupil_roles function")
+    def test_calls_get_pupil_roles(self, mock_pupil, test_args):
+        mock_pupil = Mock(return_value=[])
+        get_all_roles(**test_args)
+        mock_pupil.assert_called_once

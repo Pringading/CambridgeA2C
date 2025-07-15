@@ -1,4 +1,7 @@
-def get_role(inp: dict):
+def get_role(inp: dict) -> dict:
+    """Returns one role as used by get_pupil_roles and get_other_roles
+    functions"""
+
     role = {
         "PartyRelationshipRole_ID": {
             "Party_Id_1st": inp["party_1"],
@@ -12,7 +15,10 @@ def get_role(inp: dict):
     return role
 
 
-def get_pupil_roles(pupils: list, centre_number: int, date: str, exam_board: str):
+def get_pupil_roles(pupils: list, centre: int, date: str, board: str) -> list:
+    """Returns role information linking pupils to JCQ, exam board and centre
+    returns a list."""
+
     roles = []
     candidates = []
     for pupil in pupils:
@@ -20,11 +26,11 @@ def get_pupil_roles(pupils: list, centre_number: int, date: str, exam_board: str
             continue
         candidates.append(pupil["UCI"])
         candidate = {
-            "party_1": centre_number,
+            "party_1": centre,
             "ref": pupil["CandidateNumber"],
             "ref_type": "Candidate Number"
         }
-        
+
         uci = {
             "party_1": "JCQ",
             "ref": pupil["UCI"],
@@ -32,7 +38,7 @@ def get_pupil_roles(pupils: list, centre_number: int, date: str, exam_board: str
         }
 
         ao = {
-            "party_1": centre_number,
+            "party_1": board,
             "ref": pupil["UCI"],
             "ref_type": "AO Assigned Learner Identifier"
         }
@@ -46,7 +52,9 @@ def get_pupil_roles(pupils: list, centre_number: int, date: str, exam_board: str
     return roles
 
 
-def get_other_roles(centre: int, exam_board: str, date: str):
+def get_other_roles(centre: int, board: str, date: str) -> list:
+    """Gets list of roles linking JCQ to centre and exam board."""
+
     roles = []
     c_role = {
         "party_2": centre,
@@ -55,9 +63,9 @@ def get_other_roles(centre: int, exam_board: str, date: str):
         "ref_type": "NCN"
     }
     e_role = {
-        "party_2": exam_board,
+        "party_2": board,
         "role_type": "Awarding Organisation",
-        "ref": exam_board,
+        "ref": board,
         "ref_type": "JCQ Awarding Organisation ID"
     }
     for role in (c_role, e_role):
@@ -67,5 +75,10 @@ def get_other_roles(centre: int, exam_board: str, date: str):
     return roles
 
 
-def get_all_roles(centre_number: int, exam_board: str, pupils: list, date: int):
-    pass
+def get_all_roles(centre: int, board: str, pupils: list, date: int) -> list:
+    """calls get_other_roles and get_pupil roles function returning a list of
+    all roles."""
+
+    roles = get_other_roles(centre, board, date)
+    roles += get_pupil_roles(pupils, centre, date, board)
+    return roles
