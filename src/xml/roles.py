@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 def get_role(inp: dict):
     role = {
         "PartyRelationshipRole_ID": {
@@ -18,9 +16,9 @@ def get_pupil_roles(pupils: list, centre_number: int, date: str, exam_board: str
     roles = []
     candidates = []
     for pupil in pupils:
-        if pupil["CandidateNumber"] in candidates:
+        if pupil["UCI"] in candidates:
             continue
-        candidates.append(pupil["CandidateNumber"])
+        candidates.append(pupil["UCI"])
         candidate = {
             "party_1": centre_number,
             "ref": pupil["CandidateNumber"],
@@ -48,9 +46,26 @@ def get_pupil_roles(pupils: list, centre_number: int, date: str, exam_board: str
     return roles
 
 
-def get_other_roles():
-    pass
+def get_other_roles(centre: int, exam_board: str, date: str):
+    roles = []
+    c_role = {
+        "party_2": centre,
+        "role_type": "Centre",
+        "ref": centre,
+        "ref_type": "NCN"
+    }
+    e_role = {
+        "party_2": exam_board,
+        "role_type": "Awarding Organisation",
+        "ref": exam_board,
+        "ref_type": "JCQ Awarding Organisation ID"
+    }
+    for role in (c_role, e_role):
+        role["party_1"] = "JCQ"
+        role["date"] = date
+        roles.append(get_role(role))
+    return roles
 
 
-def get_all_roles():
+def get_all_roles(centre_number: int, exam_board: str, pupils: list, date: int):
     pass

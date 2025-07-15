@@ -1,6 +1,12 @@
 import pytest
-from src.xml.roles import get_role, get_pupil_roles, get_all_roles
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, call
+from src.xml.roles import (
+    get_role,
+    get_pupil_roles,
+    get_other_roles,
+    get_all_roles
+)
+
 
 @pytest.mark.it('Tesing get_role function')
 class TestGetRole:
@@ -83,7 +89,57 @@ class TestGetPupilRoles:
 
 @pytest.mark.it('Testing get_all_roles_function')
 class TestGetOtherRoles:
-    pass
+    @pytest.fixture
+    def test_args(self):
+        return {
+            "centre": 10000,
+            "exam_board": "02",
+            "date": "2025-07-07"
+        }
+    
+    @pytest.mark.it("Returns list")
+    def test_returns_list(self, test_args):
+        roles = get_other_roles(**test_args)
+        assert isinstance(roles, list)
+
+    @pytest.mark.it("Returns list of length 2")
+    def test_list_length_is_2(self, test_args):
+        roles = get_other_roles(**test_args)
+        assert len(roles) == 2
+
+    @pytest.mark.it("get_role function called twice")
+    def test_get_role_function_called_twice(self, test_args):
+        with patch('src.xml.roles.get_role') as mock_get:
+            mock_response = Mock()
+            mock_get.return_value = mock_response
+            get_other_roles(**test_args)
+            assert mock_get.call_count == 2
+
+    @pytest.mark.it("get_role function called with expected args")
+    def test_get_role_args(self, test_args):
+        call_1 = {
+            "party_1": "JCQ",
+            "party_2": 10000,
+            "role_type": "Centre",
+            "date": "2025-07-07",
+            "ref": 10000,
+            "ref_type": "NCN"
+        }
+        call_2 = {
+            "party_1": "JCQ",
+            "party_2": "02",
+            "role_type": "Awarding Organisation",
+            "date": "2025-07-07",
+            "ref": "02",
+            "ref_type": "JCQ Awarding Organisation ID"
+        }
+        with patch('src.xml.roles.get_role') as mock_get:
+            mock_response = Mock()
+            mock_get.return_value = mock_response
+            get_other_roles(**test_args)
+            calls = [call(call_1), call(call_2)]
+            mock_get.assert_has_calls(calls)
+
 
 @pytest.mark.it('Testing get_all_roles_function')
 class TestGetAllRoles:
