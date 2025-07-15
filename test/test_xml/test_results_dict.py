@@ -1,10 +1,9 @@
 import pytest
+from unittest.mock import patch, Mock
 from src.xml.results_dict import (
     get_msg_info,
-    get_transation_info,
     get_results_dict
 )
-from src.read_excel import get_worksheets
 
 
 @pytest.mark.it('Testing get_msg_info function')
@@ -43,11 +42,6 @@ class TestGetMessageInfo:
         assert returned_msg == expected_msg
 
 
-@pytest.mark.it('Testing get_transaction_info function')
-class TestGetTransactionInfo:
-    pass
-
-
 @pytest.mark.it('Testing get_results_dict function')
 class TestGetResultsDict:
     @pytest.fixture(scope="class")
@@ -56,5 +50,41 @@ class TestGetResultsDict:
             "message_id": "00000",
             "board": "02",
             "centre": 100000,
-            "sheets": test_sheets
+            "sheets": test_sheets,
+            "csv_filepath": "data/candidates.csv"
         }
+    
+    @pytest.mark.it("Returns dict")
+    def test_returns_dict(self, test_args):
+        results = get_results_dict(**test_args)
+        assert isinstance(results, dict)
+    
+    @pytest.mark.it("Returns dict with expected keys")
+    def test_dict_keys(self, test_args):
+        results = get_results_dict(**test_args)
+        assert "MsgHeader" in results
+        assert "DataBlock" in results
+    
+    @pytest.mark.it("Returns expected transation info")
+    def test_expected_transaction_info(self, test_args):
+        expected = {"TransactionName": "ProcessResults"}
+        results = get_results_dict(**test_args)
+        assert results["MsgHeader"]["TransactionInfo"] == expected
+    
+    @patch("src.xml.results_dict.get_msg_info")
+    @pytest.mark.it("Calls get_msg_info function")
+    def test_get_msg_info_called(self, mock_msg, test_args):
+        value = Mock(return_value={"test": "msg"})
+        mock_msg.side_effect = value
+        result = get_results_dict(**test_args)
+        assert value.call_count == 1
+        assert result["MsgHeader"]["MsgInfo"] == {"test": "msg"}
+
+    @patch("src.xml.results_dict.get_data_block")
+    @pytest.mark.it("Calls get_data_block function")
+    def test_get_data_block_called(self, mock_block, test_args):
+        value = Mock(return_value={"test": "block"})
+        mock_block.side_effect = value
+        result = get_results_dict(**test_args)
+        assert value.call_count == 1
+        assert result["DataBlock"] == {"test": "block"}
