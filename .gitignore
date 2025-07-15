@@ -5,3 +5,4 @@ test.txt
 .env.testing
 .pytest_cache
 **/__pycache__
+todo.txt
