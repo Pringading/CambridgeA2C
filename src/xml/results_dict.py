@@ -1,17 +1,18 @@
 from datetime import datetime
 from src.xml.data_block import get_data_block
 
+
 def get_msg_info(
     msg_id: str, board: str, centre: int, timestamp: str
 ) -> dict:
     """Returns dictionary with message info.
-    
-    Args: 
+
+    Args:
         msg_id(str): 36 character long string.
         board(str): board ID "02" for Cambridge International
         centre(int): centre number
         timestamp(str): timestamp in isoformat with timezone
-    
+
     Returns:
         dictionary with message info for mock A2C results file
     """
@@ -34,18 +35,22 @@ def get_msg_info(
 
 
 def get_results_dict(
-        centre: int, board: str, message_id: str, sheets: list, csv_filepath: str
+        centre: int,
+        board: str,
+        message_id: str,
+        sheets: list,
+        csv_filepath: str
 ) -> dict:
     """Gets dictionary with component results info contained in A2C file.
-    
-    Args: 
+
+    Args:
         centre(int): centre number
         board(str): board ID "02" for Cambridge International
         message_id(str): 36 character long string.
         sheets(list): list of Excel worksheet data from Cambridge component
             results Excel workbook.
         filepath(str): relative path to csv file with candidate info:
-            "UCI", "Candidate Number" & "Date of Birth" 
+            "UCI", "Candidate Number" & "Date of Birth"
 
     Returns:
         Dictionary with all results info for mock A2C component results file

@@ -21,6 +21,7 @@ def test_results(test_sheets):
     all_data = results_and_candidates(candidates, results)
     return all_data
 
+
 @pytest.fixture(scope="session")
 def test_orgs():
     return ["JCQ", 10000, "02"]

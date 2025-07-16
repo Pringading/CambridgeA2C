@@ -87,13 +87,13 @@ def results_and_candidates(candidates: dict, results: list) -> list:
 def get_all_data(sheets: list, filepath: str) -> list:
     """Takes list of excel sheets and filepath to csv file and returns list of
     results data.
-    
+
     Args:
         sheets(list): List of excel sheets data with cambridge results info
         filepath(str): relative path to csv file with candidate info:
             "UCI", "Candidate Number" & "Date of Birth"
     """
-    
+
     results = get_results(sheets)
     csv_data = get_csv_data(filepath)
     candidates = dict_from_candidates(csv_data)

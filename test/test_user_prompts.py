@@ -38,7 +38,9 @@ class TestGetExcelFilepath:
     def test_non_existent_file(self, mock_input):
         """using patching to provide a list of mock user inputs"""
 
-        mock_input.side_effect = ["Missing", "Testing.doc", "test_results.xlsx"]
+        mock_input.side_effect = [
+            "Missing", "Testing.doc", "test_results.xlsx"
+        ]
         filepath = get_excel_filepath()
         assert filepath == "data/test_results.xlsx"
 
@@ -116,7 +118,9 @@ class TestGetCSVFilepath:
     def test_non_existent_file(self, mock_input):
         """using patching to provide a list of mock user inputs"""
 
-        mock_input.side_effect = ["Missing", "Testing.xlsx", "test_candidates.csv"]
+        mock_input.side_effect = [
+            "Missing", "Testing.xlsx", "test_candidates.csv"
+        ]
         filepath = get_csv_filepath()
         assert filepath == "data/test_candidates.csv"
 

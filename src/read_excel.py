@@ -55,7 +55,7 @@ def get_date(sheets: list) -> str:
 
         # get date from string
         parsed_date = datetime.strptime(date, r"%d%b%Y")
-    
+
     # change date to yyyy-mm-dd format
     formatted_date = datetime.strftime(parsed_date, r"%Y-%m-%d")
     return formatted_date

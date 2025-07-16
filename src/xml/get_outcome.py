@@ -1,5 +1,5 @@
 def get_outcome_cn(
-    exam_board: str, 
+    exam_board: str,
     component: str,
     timestamp: str,
     mark: int,
@@ -21,8 +21,9 @@ def get_outcome_cn(
         }
     return outcome_cn
 
+
 def get_outcomes(pupils: list, exam_board: str, timestamp: str, date: str):
-    
+
     outcomes = []
     for pupil in pupils:
         outcome_cns = []
@@ -38,7 +39,7 @@ def get_outcomes(pupils: list, exam_board: str, timestamp: str, date: str):
         outcome = {
             "PartyRelationship_ID": {
                     "Party_Id_Originator": exam_board,
-                    "Learner_Party_Id" : pupil["UCI"]
+                    "Learner_Party_Id": pupil["UCI"]
                 },
             "QEOutcome_CN": outcome_cns
         }

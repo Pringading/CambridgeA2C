@@ -28,7 +28,7 @@ class TestGetOutcomeCN:
         assert outcome_cn["QE_Outcome_Date"] == "2025-07-07"
         assert outcome_cn["QE_Outcome_Status_Type"] == "Issued"
 
-    @pytest.mark.it('dictionary with expected keys on ' +''
+    @pytest.mark.it('dictionary with expected keys on ' +
                     'QualificationElementOutcome_ID key')
     def test_nested_dictionary(self, test_args):
         outcome_cn = get_outcome_cn(**test_args)
@@ -88,7 +88,7 @@ class TestGetOutcomes:
             party = outcome["PartyRelationship_ID"]
             assert party["Party_Id_Originator"] == "02"
             assert party["Learner_Party_Id"] in candidates
-    
+
     @pytest.mark.it('List on QEOutcome_CN key')
     def test_list_on_qeoutcomecn_key(self, outcome_args):
         outcomes = get_outcomes(**outcome_args)

@@ -7,7 +7,7 @@ def get_party_name_comp(order: int, type: str, name: str):
         "Party_Name_Component": name
     }
     return name_comp
-    
+
 
 def get_names(pupils: list, date: str):
     name_list = []
@@ -26,7 +26,7 @@ def get_names(pupils: list, date: str):
                     "Party_Name_Type": "Full",
                     "Party_Name_Effective_Date": date
                 },
-                
+
                 "PartyNameComponent": [forename_comp, surname_comp]
             }
         })

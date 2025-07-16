@@ -17,7 +17,7 @@ class TestGetWorksheets:
     @pytest.fixture
     def test_file(self):
         return "data/test_results.xlsx"
-    
+
     @pytest.mark.it('test returns list')
     def test_get_worksheets_returns_list(self, test_file):
         assert isinstance(get_worksheets(test_file), list)

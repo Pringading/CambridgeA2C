@@ -13,7 +13,7 @@ from src.xml.data_block import (
 @pytest.mark.it('Testing get_party_ds function')
 class TestGetPartyDS:
     @pytest.fixture(scope="class")
-    def test_args(self, test_results, test_orgs):        
+    def test_args(self, test_results, test_orgs):
         return {
             "results": test_results,
             "organisations": test_orgs
@@ -23,20 +23,20 @@ class TestGetPartyDS:
     def test_returns_dict(self, test_args):
         party_ds = get_party_ds(**test_args)
         assert isinstance(party_ds, dict)
-    
+
     @pytest.mark.it("Dictionary has expected key-value pairs")
     def test_dictionary_has_expected_key_values(self, test_args):
         party_ds = get_party_ds(**test_args)
         assert party_ds["DataBlockName"] == "Party_DS"
         assert isinstance(party_ds["Party_DS"]["Party"], list)
-    
+
     @patch("src.xml.data_block.get_pupils")
     @pytest.mark.it("Calls get_pupils function")
     def test_calls_get_pupils(self, mock_pupils, test_args):
         mock_pupils = Mock(return_value=[])
         get_party_ds(**test_args)
         mock_pupils.assert_called_once
-    
+
     @patch("src.xml.data_block.get_pupils")
     @pytest.mark.it("Calls get_organisations function")
     def test_calls_get_organisations(self, mock_orgs, test_args):
@@ -48,7 +48,7 @@ class TestGetPartyDS:
 @pytest.mark.it('Testing get_party_name_ds function')
 class TestGetPartyNameDS:
     @pytest.fixture(scope="class")
-    def test_args(self, test_results, test_orgs):        
+    def test_args(self, test_results, test_orgs):
         return {
             "results": test_results,
             "date": "2025-07-07"
@@ -58,7 +58,7 @@ class TestGetPartyNameDS:
     def test_returns_dict(self, test_args):
         party_names = get_party_name_ds(**test_args)
         assert isinstance(party_names, dict)
-    
+
     @pytest.mark.it("Dictionary has expected key-value pairs")
     def test_dictionary_has_expected_key_values(self, test_args):
         party_names = get_party_name_ds(**test_args)
@@ -76,7 +76,7 @@ class TestGetPartyNameDS:
 @pytest.mark.it('Testing get_party_relationship_ds function')
 class TestGetPartyRelationshipDS:
     @pytest.fixture(scope="class")
-    def test_args(self, test_results, test_orgs):        
+    def test_args(self, test_results, test_orgs):
         return {
             "results": test_results,
             "organisations": test_orgs,
@@ -89,7 +89,7 @@ class TestGetPartyRelationshipDS:
     def test_returns_dict(self, test_args):
         relationships = get_party_relationship_ds(**test_args)
         assert isinstance(relationships, dict)
-    
+
     @pytest.mark.it("Dictionary has expected key-value pairs")
     def test_dictionary_has_expected_key_values(self, test_args):
         relationships = get_party_relationship_ds(**test_args)
@@ -115,7 +115,7 @@ class TestGetPartyRelationshipDS:
 @pytest.mark.it('Testing get_party_relationship_role_ds function')
 class TestPartyRelationshipRoleDS:
     @pytest.fixture(scope="class")
-    def test_args(self, test_results):        
+    def test_args(self, test_results):
         return {
             "results": test_results,
             "date": "2025-07-07",
@@ -146,7 +146,7 @@ class TestPartyRelationshipRoleDS:
 @pytest.mark.it('Testing get_qe_outcome_ds function')
 class TestGetQEOutcomeDS:
     @pytest.fixture(scope="class")
-    def test_args(self, test_results):        
+    def test_args(self, test_results):
         return {
             "results": test_results,
             "date": "2025-07-07",
@@ -177,7 +177,7 @@ class TestGetQEOutcomeDS:
 @pytest.mark.it('Testing get_data_block function')
 class TestDataBlockDS:
     @pytest.fixture(scope="class")
-    def test_args(self, test_sheets):        
+    def test_args(self, test_sheets):
         return {
             "sheets": test_sheets,
             "centre": 10000,
@@ -204,7 +204,7 @@ class TestDataBlockDS:
         db = get_data_block(**test_args)
         assert mock_func.call_count == 1
         assert db[0] == {"test": "party"}
-    
+
     @patch("src.xml.data_block.get_party_name_ds")
     @pytest.mark.it("Calls get_party_name_ds function")
     def test_calls_get_party_name_ds(self, mock_names, test_args):
@@ -213,15 +213,6 @@ class TestDataBlockDS:
         db = get_data_block(**test_args)
         assert mock_func.call_count == 1
         assert db[1] == {"test": "names"}
-
-    # @patch("src.xml.data_block.get_outcomes")
-    # @pytest.mark.it("Calls get_outcomes function")
-    # def test_calls_get_outcomes(self, mock_outcomes, test_args):
-    #     value = Mock(return_value={"test": "names"})
-    #     mock_outcomes.side_effect = value
-    #     db = get_data_block(**test_args)
-    #     assert value.call_count == 1
-    #     assert db[4] == {"test": "names"}
 
     @patch("src.xml.data_block.get_party_relationship_ds")
     @pytest.mark.it("Calls get_party_relationship_ds function")

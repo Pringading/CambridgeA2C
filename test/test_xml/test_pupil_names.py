@@ -12,12 +12,12 @@ class TestGetPartyNameComp:
             "name": "candidate-name"
         }
         return args
-    
+
     @pytest.mark.it('Returns dictionary')
     def test_returns_dict(self, comp_args):
         name_comp = get_party_name_comp(**comp_args)
         assert isinstance(name_comp, dict)
-    
+
     @pytest.mark.it('Dictionary contains expected key-value pairs')
     def test_dict_has_expected_keys(self, comp_args):
         name_comp = get_party_name_comp(**comp_args)
