@@ -16,7 +16,7 @@ class TestGetMessageInfo:
             "centre": 100000,
             "timestamp": "timestamp"
         }
-    
+
     @pytest.mark.it("returns dict")
     def test_returns_dict(self, test_args):
         msg_info = get_msg_info(**test_args)
@@ -53,24 +53,24 @@ class TestGetResultsDict:
             "sheets": test_sheets,
             "csv_filepath": "data/test_candidates.csv"
         }
-    
+
     @pytest.mark.it("Returns dict")
     def test_returns_dict(self, test_args):
         results = get_results_dict(**test_args)
         assert isinstance(results, dict)
-    
+
     @pytest.mark.it("Returns dict with expected keys")
     def test_dict_keys(self, test_args):
         results = get_results_dict(**test_args)
         assert "MsgHeader" in results
         assert "DataBlock" in results
-    
+
     @pytest.mark.it("Returns expected transation info")
     def test_expected_transaction_info(self, test_args):
         expected = {"TransactionName": "ProcessResults"}
         results = get_results_dict(**test_args)
         assert results["MsgHeader"]["TransactionInfo"] == expected
-    
+
     @patch("src.xml.results_dict.get_msg_info")
     @pytest.mark.it("Calls get_msg_info function")
     def test_get_msg_info_called(self, mock_msg, test_args):

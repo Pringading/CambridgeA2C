@@ -6,3 +6,7 @@ test.txt
 .pytest_cache
 **/__pycache__
 todo.txt
+
+!data/test_results.xlsx
+!data/test_candidates.csv
+!data/test_headings.csv

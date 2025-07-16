@@ -14,9 +14,9 @@ class TestGetOutcomeCN:
             "date": "2025-07-07"
         }
         return args
-    
+
     @pytest.mark.it('Retuns dictionary')
-    def test_returns_dictionary(self,test_args):
+    def test_returns_dictionary(self, test_args):
         outcome_cn = get_outcome_cn(**test_args)
         assert isinstance(outcome_cn, dict)
 
@@ -28,7 +28,8 @@ class TestGetOutcomeCN:
         assert outcome_cn["QE_Outcome_Date"] == "2025-07-07"
         assert outcome_cn["QE_Outcome_Status_Type"] == "Issued"
 
-    @pytest.mark.it('dictionary with expected keys on QualificationElementOutcome_ID key')
+    @pytest.mark.it('dictionary with expected keys on ' +''
+                    'QualificationElementOutcome_ID key')
     def test_nested_dictionary(self, test_args):
         outcome_cn = get_outcome_cn(**test_args)
         qual_elems = outcome_cn["QualificationElementOutcome_ID"]
@@ -57,24 +58,19 @@ class TestGetOutcomes:
     def test_returns_list(self, outcome_args):
         outcomes = get_outcomes(**outcome_args)
         assert isinstance(outcomes, list)
-    
-    @pytest.mark.it('Returns list')
-    def test_returns_list(self, outcome_args):
-        outcomes = get_outcomes(**outcome_args)
-        assert isinstance(outcomes, list)
-    
+
     @pytest.mark.it('List is expected length')
     def test_returns_list_of_expected_length(self, outcome_args):
         expected_length = len(outcome_args["pupils"])
         outcomes = get_outcomes(**outcome_args)
         assert len(outcomes) == expected_length
-    
+
     @pytest.mark.it('Returns list of dictionaries')
     def test_returns_list_of_dicts(self, outcome_args):
         outcomes = get_outcomes(**outcome_args)
         for outcome in outcomes:
             assert isinstance(outcome, dict)
-    
+
     @pytest.mark.it('Each dictionary has expected keys')
     def test_dictionaries_have_expected_keys(self, outcome_args):
         outcomes = get_outcomes(**outcome_args)
@@ -83,8 +79,8 @@ class TestGetOutcomes:
             assert "QEOutcome_CN" in outcome
 
     @pytest.mark.it('Dictionary with expected key value pairs on ' +
-        'PartyRelationship_ID key')
-    def test_dictionaries_have_expected_keys(self, outcome_args):
+                    'PartyRelationship_ID key')
+    def test_expected_keys_in_relationship_id_dict(self, outcome_args):
         pupils = outcome_args["pupils"]
         candidates = [pupil["CandidateNumber"] for pupil in pupils]
         outcomes = get_outcomes(**outcome_args)
@@ -94,11 +90,10 @@ class TestGetOutcomes:
             assert party["Learner_Party_Id"] in candidates
     
     @pytest.mark.it('List on QEOutcome_CN key')
-    def test_dictionaries_have_expected_keys(self, outcome_args):
+    def test_list_on_qeoutcomecn_key(self, outcome_args):
         outcomes = get_outcomes(**outcome_args)
         for outcome in outcomes:
             assert isinstance(outcome["QEOutcome_CN"], list)
-    
 
     @pytest.mark.it('Returns expected Results')
     def test_expected_results(self):

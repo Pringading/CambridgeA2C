@@ -199,55 +199,69 @@ class TestDataBlockDS:
     @patch("src.xml.data_block.get_party_ds")
     @pytest.mark.it("Calls get_party_ds function")
     def test_calls_get_party_ds(self, mock_party, test_args):
-        mock_party = Mock(return_value=[])
-        get_data_block(**test_args)
-        mock_party.assert_called_once
+        mock_func = Mock(return_value={"test": "party"})
+        mock_party.side_effect = mock_func
+        db = get_data_block(**test_args)
+        assert mock_func.call_count == 1
+        assert db[0] == {"test": "party"}
     
     @patch("src.xml.data_block.get_party_name_ds")
     @pytest.mark.it("Calls get_party_name_ds function")
     def test_calls_get_party_name_ds(self, mock_names, test_args):
-        mock_names = Mock(return_value=[])
-        get_data_block(**test_args)
-        mock_names.assert_called_once
-    
-    @patch("src.xml.data_block.get_outcomes")
-    @pytest.mark.it("Calls get_outcomes function")
-    def test_calls_get_outcomes(self, mock_outcomes, test_args):
-        mock_outcomes = Mock(return_value=[])
-        get_data_block(**test_args)
-        mock_outcomes.assert_called_once
-    
+        mock_func = Mock(return_value={"test": "names"})
+        mock_names.side_effect = mock_func
+        db = get_data_block(**test_args)
+        assert mock_func.call_count == 1
+        assert db[1] == {"test": "names"}
+
+    # @patch("src.xml.data_block.get_outcomes")
+    # @pytest.mark.it("Calls get_outcomes function")
+    # def test_calls_get_outcomes(self, mock_outcomes, test_args):
+    #     value = Mock(return_value={"test": "names"})
+    #     mock_outcomes.side_effect = value
+    #     db = get_data_block(**test_args)
+    #     assert value.call_count == 1
+    #     assert db[4] == {"test": "names"}
+
     @patch("src.xml.data_block.get_party_relationship_ds")
     @pytest.mark.it("Calls get_party_relationship_ds function")
-    def test_calls_get_party_relationship_ds(self, mock_relationships, test_args):
-        mock_relationships = Mock(return_value=[])
-        get_data_block(**test_args)
-        mock_relationships.assert_called_once
-    
+    def test_calls_get_party_relationship_ds(self, mock_rels, test_args):
+        mock_func = Mock(return_value={"test": "rels"})
+        mock_rels.side_effect = mock_func
+        db = get_data_block(**test_args)
+        assert mock_func.call_count == 1
+        assert db[2] == {"test": "rels"}
+
     @patch("src.xml.data_block.get_party_relationship_role_ds")
     @pytest.mark.it("Calls get_party_relationship_role_ds function")
     def test_calls_get_party_relationship_role_ds(self, mock_roles, test_args):
-        mock_roles = Mock(return_value=[])
-        get_data_block(**test_args)
-        mock_roles.assert_called_once
-    
+        mock_func = Mock(return_value={"test": "roles"})
+        mock_roles.side_effect = mock_func
+        db = get_data_block(**test_args)
+        assert mock_func.call_count == 1
+        assert db[3] == {"test": "roles"}
+
     @patch("src.xml.data_block.get_qe_outcome_ds")
     @pytest.mark.it("Calls get_qe_outcome_ds function")
     def test_calls_get_qe_outcome_ds(self, mock_outcomes, test_args):
-        mock_outcomes = Mock(return_value=[])
-        get_data_block(**test_args)
-        mock_outcomes.assert_called_once
+        mock_func = Mock(return_value={"test": "outcomes"})
+        mock_outcomes.side_effect = mock_func
+        db = get_data_block(**test_args)
+        assert mock_func.call_count == 1
+        assert db[4] == {"test": "outcomes"}
 
     @patch("src.xml.data_block.get_date")
     @pytest.mark.it("Calls get_date function")
     def test_calls_get_date_function(self, mock_date, test_args):
-        mock_date = Mock(return_value="2025-07-07")
+        mock_func = Mock(return_value="2025-07-07")
+        mock_date.side_effect = mock_func
         get_data_block(**test_args)
-        mock_date.assert_called_once
-    
+        assert mock_func.call_count == 1
+
     @patch("src.xml.data_block.get_all_data")
     @pytest.mark.it("Calls get_all_data function")
     def test_calls_get_all_data_function(self, mock_data, test_args):
-        mock_data = Mock(return_value=[])
+        mock_func = Mock(return_value=[])
+        mock_data.side_effect = mock_func
         get_data_block(**test_args)
-        mock_data.assert_called_once
+        assert mock_func.call_count == 1

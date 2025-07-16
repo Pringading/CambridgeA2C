@@ -5,7 +5,7 @@ from src.xml.get_parties import get_pupils, get_organisations
 @pytest.mark.it('Testing get_pupils function')
 class TestGetPupils:
     """tests use test_results fixture from conftest."""
-    
+
     @pytest.mark.it('Returns list')
     def test_get_pupils_returns_list(self):
         parties = get_pupils([])
@@ -41,12 +41,12 @@ class TestGetPupils:
             party_id = party["Party_ID"]
             assert isinstance(party_id, dict)
             assert "Party_Id" in party_id
-        
+
     @pytest.mark.it("No duplicates in returned list")
     def test_no_duplicates_in_list(self, test_results):
         parties = get_pupils(test_results)
         for i, party in enumerate(parties):
-            assert party not in parties[i + 1: ]
+            assert party not in parties[i + 1:]
 
 
 @pytest.mark.it('Testing get organisations function')
