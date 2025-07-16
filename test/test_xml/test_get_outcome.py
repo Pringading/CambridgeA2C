@@ -82,7 +82,7 @@ class TestGetOutcomes:
                     'PartyRelationship_ID key')
     def test_expected_keys_in_relationship_id_dict(self, outcome_args):
         pupils = outcome_args["pupils"]
-        candidates = [pupil["CandidateNumber"] for pupil in pupils]
+        candidates = [pupil["UCI"] for pupil in pupils]
         outcomes = get_outcomes(**outcome_args)
         for outcome in outcomes:
             party = outcome["PartyRelationship_ID"]
@@ -94,23 +94,3 @@ class TestGetOutcomes:
         outcomes = get_outcomes(**outcome_args)
         for outcome in outcomes:
             assert isinstance(outcome["QEOutcome_CN"], list)
-
-    @pytest.mark.it('Returns expected Results')
-    def test_expected_results(self):
-        pupils = []
-        for num in range(3):
-            pupil = {}
-            pupil["CandidateNumber"] = num
-            pupil["Results"] = [("000/01", 10), ("000/02", 20)]
-        outcomes = get_outcomes(pupils, "", "", "")
-        for outcome in outcomes:
-            outcome_cns = outcome["QEOutcome_CN"]
-            for cn in outcome_cns:
-                mark = cn["QE_Outcome_Value"]
-                qual = cn["QualificationElementOutcome_ID"]
-                component = qual["AO_Qualification_Element_Id"]
-
-                assert isinstance(mark, int)
-                assert mark in (10, 20)
-                assert isinstance(component, str)
-                assert component in ("000/01", "000/02")
