@@ -9,14 +9,14 @@ from src.read_csv import (
 
 @pytest.fixture(scope="session")
 def test_sheets():
-    filepath = "data/Testing.xlsx"
+    filepath = "data/test_results.xlsx"
     return get_worksheets(filepath)
 
 
 @pytest.fixture(scope="session")
 def test_results(test_sheets):
     results = get_results(test_sheets)
-    csv_data = get_csv_data("data/candidates.csv")
+    csv_data = get_csv_data("data/test_candidates.csv")
     candidates = dict_from_candidates(csv_data)
     all_data = results_and_candidates(candidates, results)
     return all_data

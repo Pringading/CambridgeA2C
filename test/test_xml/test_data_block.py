@@ -183,7 +183,7 @@ class TestDataBlockDS:
             "centre": 10000,
             "board": "02",
             "timestamp": "timestamp",
-            "csv_filepath": "data/candidates.csv"
+            "csv_filepath": "data/test_candidates.csv"
         }
 
     @pytest.mark.it("Returns list")

@@ -51,7 +51,7 @@ class TestGetResultsDict:
             "board": "02",
             "centre": 100000,
             "sheets": test_sheets,
-            "csv_filepath": "data/candidates.csv"
+            "csv_filepath": "data/test_candidates.csv"
         }
     
     @pytest.mark.it("Returns dict")

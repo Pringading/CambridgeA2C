@@ -14,21 +14,22 @@ from datetime import datetime
 
 @pytest.mark.it('get_worksheets function tests')
 class TestGetWorksheets:
+    @pytest.fixture
+    def test_file(self):
+        return "data/test_results.xlsx"
+    
     @pytest.mark.it('test returns list')
-    def test_get_worksheets_returns_list(self):
-        test_file = "data/Testing.xlsx"
+    def test_get_worksheets_returns_list(self, test_file):
         assert isinstance(get_worksheets(test_file), list)
 
     @pytest.mark.it('test returns list of worksheets')
-    def test_get_worksheets_returns_worksheets(self):
-        test_file = "data/Testing.xlsx"
+    def test_get_worksheets_returns_worksheets(self, test_file):
         sheets = get_worksheets(test_file)
         for sheet in sheets:
             assert isinstance(sheet, Worksheet)
 
     @pytest.mark.it('only returns sheets with component numbers')
-    def test_filters_sheets(self):
-        test_file = "data/Testing.xlsx"
+    def test_filters_sheets(self, test_file):
         sheets = get_worksheets(test_file)
         assert [sheet.title for sheet in sheets] == ["0100", "0101", "0102"]
 
@@ -41,7 +42,7 @@ class TestGetDate:
 
     @pytest.mark.it('Returns date value')
     def test_get_date_returns_date(self):
-        test_file = "data/Testing.xlsx"
+        test_file = "data/test_results.xlsx"
         sheets = get_worksheets(test_file)
         assert get_date(sheets) == "2024-08-13"
 
@@ -92,6 +93,10 @@ class TestGetTitles:
 
 @pytest.mark.it('get_sheet_results funciton tests')
 class TestGetSheetResults:
+    @pytest.fixture
+    def test_file(self):
+        return "data/test_results.xlsx"
+
     @pytest.mark.it("Returns list")
     def test_get_results_returns_list(self):
         test_worksheet = Worksheet(parent=None, title="test")
@@ -99,8 +104,7 @@ class TestGetSheetResults:
         assert isinstance(candidates, list)
 
     @pytest.mark.it("Returns list of dictionaries")
-    def test_get_results_returns_list_of_dicts(self):
-        test_file = "data/Testing.xlsx"
+    def test_get_results_returns_list_of_dicts(self, test_file):
         sheets = get_worksheets(test_file)
         results = get_sheet_results(sheets[0])
         assert isinstance(results[0], dict)
@@ -108,8 +112,7 @@ class TestGetSheetResults:
             assert isinstance(result, dict)
 
     @pytest.mark.it("Dictionaries contain candidate number and candidate name")
-    def test_get_results_has_candidate_no_and_name(self):
-        test_file = "data/Testing.xlsx"
+    def test_get_results_has_candidate_no_and_name(self, test_file):
         sheets = get_worksheets(test_file)
         results = get_sheet_results(sheets[0])
         for result in results:
@@ -117,8 +120,7 @@ class TestGetSheetResults:
             assert isinstance(result["CandidateName"], str)
 
     @pytest.mark.it("Dictionaries contain expected keys")
-    def test_get_results_dict_keys(self):
-        test_file = "data/Testing.xlsx"
+    def test_get_results_dict_keys(self, test_file):
         sheets = get_worksheets(test_file)
         results = get_sheet_results(sheets[0])
         for result in results:
@@ -132,7 +134,7 @@ class TestGetSheetResults:
 class TestGetResults:
     @pytest.fixture
     def test_sheets(self):
-        test_file = "data/Testing.xlsx"
+        test_file = "data/test_results.xlsx"
         return get_worksheets(test_file)
 
     @pytest.mark.it("Returns list")
@@ -164,7 +166,7 @@ class TestGetResults:
 class TestGetCentreNumber:
     @pytest.fixture
     def test_sheets(self):
-        test_file = "data/Testing.xlsx"
+        test_file = "data/test_results.xlsx"
         return get_worksheets(test_file)
 
     @pytest.mark.it('returns integer')

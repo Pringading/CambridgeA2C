@@ -11,28 +11,28 @@ from src.read_csv import (
 
 @pytest.mark.it("Testing get_data function")
 class TestGetData:
+    @pytest.fixture()
+    def test_file(self):
+        return "data/test_candidates.csv"
+
     @pytest.mark.it("Returns list")
-    def test_returns_list(self):
-        test_file = "data/candidates.csv"
+    def test_returns_list(self, test_file):
         candidates = get_csv_data(test_file)
         assert isinstance(candidates, list)
 
     @pytest.mark.it("Each item in list is dictionary")
-    def test_list_of_dicts(self):
-        test_file = "data/candidates.csv"
+    def test_list_of_dicts(self, test_file):
         candidates = get_csv_data(test_file)
         for candidate in candidates:
             assert isinstance(candidate, dict)
 
     @pytest.mark.it("List is expected length")
-    def test_list_is_expected_length(self):
-        test_file = "data/candidates.csv"
+    def test_list_is_expected_length(self, test_file):
         candidates = get_csv_data(test_file)
         assert len(candidates) == 148
 
     @pytest.mark.it("Dictionaries have expected keys")
-    def test_dictionaries_have_expected_keys(self):
-        test_file = "data/candidates.csv"
+    def test_dictionaries_have_expected_keys(self, test_file):
         candidates = get_csv_data(test_file)
         for candidate in candidates:
             assert "Date of Birth" in candidate
@@ -44,7 +44,7 @@ class TestGetData:
 class TestDictFromCandidates:
     @pytest.fixture
     def c_list(self):
-        test_file = "data/candidates.csv"
+        test_file = "data/test_candidates.csv"
         candidates = get_csv_data(test_file)
         return candidates
 
@@ -83,15 +83,13 @@ class TestDictFromCandidates:
 @pytest.mark.it("Testing results_and_candidates function")
 class TestResultsAndCandidates:
     @pytest.fixture
-    def test_args(self):
-        c_list = get_csv_data("data/candidates.csv")
+    def test_args(self, test_sheets):
+        c_list = get_csv_data("data/test_candidates.csv")
         c_dict = dict_from_candidates(c_list)
-        sheets = get_worksheets("data/Testing.xlsx")
-        results = get_results(sheets)
+        results = get_results(test_sheets)
         return {
             "candidates": c_dict,
             "results": results
-
         }
 
     @pytest.mark.it("Returns list")
@@ -120,7 +118,7 @@ class TestResultsAndCandidates:
 
     @pytest.mark.it("Input list is not mutated")
     def test_input_list_not_mutated(self, test_args):
-        sheets = get_worksheets("data/Testing.xlsx")
+        sheets = get_worksheets("data/test_results.xlsx")
         original_input = get_results(sheets)
         results_and_candidates(**test_args)
         assert test_args["results"] == original_input
@@ -149,7 +147,7 @@ class TestGetAllData:
     def test_args(self, test_sheets):
         return {
             "sheets": test_sheets,
-            "filepath": "data/candidates.csv"
+            "filepath": "data/test_candidates.csv"
         }
     
     @pytest.mark.it("Test returns list")
