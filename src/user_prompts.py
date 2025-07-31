@@ -60,7 +60,7 @@ def valid_headings(filepath: str) -> bool:
     Args:
         filepath(str): path to csv file to be checked
     """
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, "r", encoding="utf-8-sig") as f:
         headings = f.readline().rstrip().split(",")
 
         if "Candidate Number" not in headings:
