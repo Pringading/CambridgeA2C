@@ -84,7 +84,7 @@ You will need to download a copy of the repo and install python.
 
     *On macOS and Linux:*
     ```bash
-    $ . cambridge-a2c/data
+    $ open cambridge-a2c/data
     ```
 
 ## Execution / Usage
